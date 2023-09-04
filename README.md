@@ -133,102 +133,23 @@ As mentioned before, if at least one of these next mutations are featured in the
 Below the mutations that are considered recurrent in POLE, along wIth chromosomal position, nucloetide substitution and protein change:
 
 	CHROM: POS			NUCL. SUB.		PROT. CHANGE
-	chr12:132676598		c.857C>G		P286R
-	chr12:132673703 	c.1231G>T		V411L
-	chr12:132676565		c.890C>T  		S297F
-	chr12:132673261		c.1376C>T		S459F
-	chr12:132673271		c.1366G>C		A456P
-	chr12:132675741		c.1100T>C		F367S
-	chr12:132673664		c.1270C>A		L424I
-	chr12:132676571		c.884T>G		M295R
-	chr12:132673627		c.1307C>G		P436R
-	chr12:132673603		c.1331T>A		M444K
-	chr12:132675739		c.1102G>T		D368Y
-
+	chr12:133253184		c.857C>G		P286R
+	chr12:133250289 	c.1231G>T		V411L
+	chr12:133253151		c.890C>T  		S297F
+	chr12:133249847		c.1376C>T		S459F
+	chr12:133249857		c.1366G>C		A456P
+	chr12:133252327		c.1100T>C		F367S
+	chr12:133250250		c.1270C>A		L424I
+	chr12:133253157		c.884T>G		M295R
+	chr12:133250213		c.1307C>G		P436R
+	chr12:133250189		c.1331T>A		M444K
+	chr12:133252325		c.1102G>T		D368Y
+ 	chr12:133250250		c.1270C>G		L424V
+	chr12:133253208		c.833C>T		T278M
+       	chr12:133249829		c.1394C>T		A465V
+	chr12:133256623      	c.340C>T		R114*
+	chr12:133252023		c.1187A>G		E396G
+	chr12:133257828		c.100C>T		R34C
 
 
 </div>
-	
-# Filter ClinVar
-
-1. Si sono filtrate prima tutte le benigne, in questo caso rimangono solo le VUS che verranno caricate sul cbioportal, il data_mutation_extended.txt file è nella rispettiva cartella della neoplasia denominata NoBenign
-
-2. Il secondo filtro rimuove tutte le VUS a partire dai maf presenti nella cartella NoBenign da cui sono state eliminate le benigne. In questo caso sono tenute le occorrenze **pathogenic, likely_pathogenic, risk_factor, drug_response** Il data_mutation_extended.txt file è nella rispettiva cartella della neoplasia denominata NoVus
-
-## workflow dei comandi
-
-**Filtro su benigne**
-
-```
-python3 filter_clinvar.py \
--f /data/hpc-share/cbioportal/ovary/maf/ \
--o /data/hpc-share/cbioportal/ovary/
-```
-
-**Creato file da caricare su cBioportal**
-
-```
-python3 concatenate.py \
--f /data/hpc-share/cbioportal/ovary/NoBenign/ \
--e maf \
--o /data/hpc-share/cbioportal/ovary/NoBenign/data_mutations_extended.txt
-```
-
-**Filtrato da NoBenign le VUS**
-```
-python3 filter_clinvar.py \
--f /data/hpc-share/cbioportal/ovary/NoBenign/ \
--o /data/hpc-share/cbioportal/ovary/ \
--v
-```
-
-**Creato file da caricare su cBioportal**
-
-```
-python3 concatenate.py \
--f /data/hpc-share/cbioportal/ovary/NoVus/ \
--e maf \
--o /data/hpc-share/cbioportal/ovary/NoVus/data_mutations_extended.txt
-```
-
-**Creato le tabelle patient e sample clinical data**
-
-```
-python3 walk.py -i SAMPLE_TOTAL_OVARY.tsv 	
--t snv 	
--m 	
--o /data/hpc-share/cbioportal/ovary/
-```
-
-**Creato tabella fusioni**
-
-```
-python3 walk.py \
--i SAMPLE_TOTAL_OVARY.tsv \
--t snv \
--u \
--o /data/hpc-share/cbioportal/ovary/
-```
-
-
-## Datasets 
-
-
-- [ ] breast
-- [ ] colangio
-- [x] colon
-- [x] endometrium
-- [ ] gist
-- [x] lung
-- [ ] melanoma
-- [x] ovary
-- [ ] pancreas
-- [ ] prostata
-- [ ] tiroide
-
-
-
-
-
-
-
