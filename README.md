@@ -76,30 +76,29 @@ Make sure to enter the folder with both the Python script and your filtered VCF 
 The required input data include the folder where the filtered VCF is positioned and the TMB (Tumor Mutational Burden)
 
 Use the following command to receive the full output of the script:
->$ python script_dictionary_e_score.py -f "YOUR_filtered_VCF_FILE.vcf" --TMB (value of the TMB)
+>$ python POLE_SCORE.py -f "YOUR_filtered_VCF_FILE.vcf" --TMB (value of the TMB)
 or
->$ python script_dictionary_e_score.py -f "YOUR_filtered_VCF_FILE.vcf" -t (value of the TMB)
+>$ python POLE_SCORE.py -f "YOUR_filtered_VCF_FILE.vcf" -t (value of the TMB)
 
 You can save the result of your analysis in a text file by typing the following command in the Command Prompt:
->$ python script_dictionary_e_score.py -f "YOUR_filtered_VCF_FILE.vcf" > VCF_Results.txt
+>$ POLE_SCORE.py -f "YOUR_filtered_VCF_FILE.vcf" > VCF_Results.txt
 
+If you prefer to have an output featuring additional details regarding mutation frequency and the codntiotion which raised the score, try to run the 'POLE_SCORE(additional_output_details).py' with the same process.
 
 
 ## What raises the Score?
 
 The conditions for which the Score is raised are based on the data available on ["Interpretation of somatic POLE mutations in endometrial carcinoma"](https://pubmed.ncbi.nlm.nih.gov/31829442/)(Castillo et. all, 2020).
+Takin into consideration the different size of the exome of the FPG500 input data featured in our study, the threshold the allowed a raise of the score were modified with a conversione via Median of Medians technique-.
 Given a filtered VCF file, the requirement to find a POLE mutation are:
 
-	C>A substitutions > 20%, 
+	C>A substitutions > 6.6%, 
 	T>G substitutions > 4%, 
-	C>G substitutions < 0.6%, 
-	Indels < 5%, 
+	C>G substitutions < 4.6%, 
+	Indels < 4%, 
 	TMB > 100 mut/Mb.
 	Presence of Recurrent Mutations
 
-Analysis of the C>T mutations (>= 30%) has been added in reference to the following paper:
-["The mutational signatures of formalin fixation on the human genome | Nature Communications"](https://www.nature.com/articles/s41467-022-32041-5).
-(Graham et. al, 2022).
 
 <div class="center">
 
@@ -146,7 +145,7 @@ Below the mutations that are considered recurrent in POLE, along wIth chromosoma
 	chr12:133252325		c.1102G>T		D368Y
  	chr12:133250250		c.1270C>G		L424V
 	chr12:133253208		c.833C>T		T278M
-       	chr12:133249829		c.1394C>T		A465V
+ 	chr12:133249829		c.1394C>T		A465V
 	chr12:133256623      	c.340C>T		R114*
 	chr12:133252023		c.1187A>G		E396G
 	chr12:133257828		c.100C>T		R34C
