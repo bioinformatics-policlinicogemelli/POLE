@@ -73,36 +73,14 @@ def recurrentmutations(file):
                 x=record.POS
                 y= str(record.REF)+">"+str(record.ALT[alt])
                 totalmuts[x] = y
-                #positions.append(x) #aggiungi ogni POS a una lista
-                #mutations.append(y) #aggiungi ogni REF+ALT a una lista   
-    #print("Dictionary Mutazioni = ", totalmuts, "\n")
-    #print("Lunghezza dict Mutazioni = ", len(totalmuts), "\n")
 
-    #print("Posizioni delle mutazioni = ", positions, "\n", "Numero Posizioni = ", len(positions), "\n")
-    #print("Mutazioni trovate = ", mutations, "\n", "Numero Mutazioni = ", len(mutations), "\n")
-    
-    #questa è la lista di mutazioni che secondo l'articolo sono definibili come "Recurrent". Le keys sono le posizioni trovate tramite sito Varsome per le rispettive mutazioni, e i values sono gli eventi di mutazione chiave
-    #se tali valori coincidono con quelli visti nel VCF filtrato, allora ci sono "current mutations in EC", condizione che aumenta di +1 lo score generale
-
-    ##########ATTENZIONE
-    # dictionary errato dei recurrent, dato che usa come riferimento genoma hg38:
-    #listrecurrent= {132676598: 'G>C', 132673703: 'C>A', 132673622: 'C>A', 132676565: 'G>A', 132676143: 'G>A', 132673261: 'G>A', 132673180: 'G>A', 132673271: 'C>G', 132675741: 'A>G', 132673664: 'G>T', 132673583: 'G>T', 132676571: 'A>C', 132676149: 'A>C', 132673627: 'G>C', 132673249: 'G>C', 132673603: 'A>T', 132673225: 'A>T', 132675739: 'C>A', 132675441: 'C>A', 132668416: 'G>A'}
-    #nuova list recurrent per hg19
-    
-    
-    
- #(OLD)listrecurrent = {133253184: 'G>C', 133250289: 'C>A', 133250208: 'C>A', 133253151: 'G>A', 133249349: 'G>A', 133252729: 'G>A', 133249847: 'G>A', 133249766: 'G>A', 133249857: 'C>G', 133252327: 'A>G', 133250250: 'G>T', 133250169: 'G>T', 133253157: 'A>C', 133249355: 'A>C', 133225944: 'A>C', 133252735: 'A>C', 133250213: 'G>C', 133249835: 'G>C', 133250189: 'A>T', 133249811: 'A>T', 133252325: 'C>A', 133248833: 'C>A', 133252027: 'C>A'}
     listrecurrent = {133253184: 'G>C', 133250289: 'C>A', 133253151: 'G>A', 133249847: 'G>A', 133249857: 'C>G', 133252327: 'A>G', 133250250: 'G>T', 133253157: 'A>C', 133250213: 'G>C', 133250189: 'A>T', 133252325: 'C>A', 133250250: 'G>C', 133250238: 'C>T', 133250250: 'G>C', 133253208: 'G>A', 133249829: 'G>A', 133256623: 'G>A', 133252023: 'T>G', 133257828: 'G>A'}
+
     
-    #valori alternativi di V411L 132673703: 'C>G', 132673622: 'C>G' da aggiungere una volta risolto il problema del dictionary: tali chiavi annullerebbero i valori precendentemente assegnati: inserirli direttamente non va bene perchè non ci possono essere duplicati nelle chiavi di un dizionario
-    # il dictionary qui include tutti valori presi da Varsome, sia quelli NM_006231.4 che quelli ENST00000535270
-    #print("Mut ricorrenti = ", listrecurrent)
     shared_items = {k: listrecurrent[k] for k in listrecurrent if k in totalmuts and listrecurrent[k] == totalmuts[k]}
     if len(shared_items) == 0:
-     #   print("     No Recurrent Mutations found", "\n") 
         return shared_items   
     else:
-      #  print("     Numero Recurrent Mutations trovate: ", len(shared_items)) 
         return shared_items
 
 
@@ -116,9 +94,6 @@ def listaindels(file):
     vcf_reader = vcf.Reader(open(file, 'r')) #leggi il vcf di input
     for record in vcf_reader:
         for alt in range(0,len(record.ALT)):
-            #if len(record.REF)!=1:                         # Debug: Capire come mai c'erano degli eventi in più. Risposta: Dinucleotidi in ALT e REf mal classificati nel 1°metodo
-             #   if len(record.REF)==len(record.ALT[alt]):
-              #      lista_doppietti.append(record.REF)
             if len(record.ALT[alt])!=len(record.REF):
                 lista_indels.append(record.REF)
                 if len(record.ALT[alt])>len(record.REF):
@@ -132,8 +107,7 @@ def listaindels(file):
 
 #numero totale di elementi nel vcf filtrato, siano essi indels o non indels.
 def eventimutazionetotali(file):
-    totalemutazioni=0
-    #totalemutazioni è il numero totale di elementi nel vcf filtrato, siano essi indels o non indels.    
+    totalemutazioni=0   
     vcf_reader = vcf.Reader(open(file, 'r'))
     for record in vcf_reader:
             totalemutazioni+=1
