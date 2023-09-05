@@ -8,7 +8,7 @@ Repository for pathogenic estimation of POLE mutations via development of a scor
 
 The script overall generates a Dictionary that is composed of the counts of types of mutations found in a filtered VCF file given as input.
 
-After this it generates a score: an integer number whose value depends on the data of the dictionary and returns a specific output depending on the score. This putput is mostly a sentence which suggests if the vcf presents a POLE mutation which is pathogenic (Score >= 4), non-pathogenic(Score < 3) or  a variant of unknown isgnificance (score = 3)
+After this it generates a score: an integer number whose value depends on the data of the dictionary and returns a specific output depending on the score. This putput is mostly a sentence which suggests if the vcf presents a POLE mutation which is pathogenic (Score >= 4), non-pathogenic (Score < 3) or  a variant of unknown isgnificance (score = 3)
 To generate this score are taken into account not only the data of the Dictionary, but also the list Indels (which comprehend the amoun to observes events of insertion and mutation) and the total number of different mutations observed in the VCF file.
 
 The output files of this script are based on the data available on the following article  ["Interpretation of somatic POLE mutations in endometrial carcinoma"](https://pubmed.ncbi.nlm.nih.gov/31829442/). 
@@ -20,11 +20,12 @@ The output files of this script are based on the data available on the following
 All the functions of the code take a file / folder as an input
 The required input files are .vcf
 It is suggested to first filter the vcf that needs to be analyzed.
-This can easily be done with the [vcf_filter.py](https://gitlab.com/gstep-bioinformatics-core-facility-research/varan-2.0/-/blob/main/vcf_filter.py) script.
+This can easily be done with the [vcf_filter.py]([https://gitlab.com/gstep-bioinformatics-core-facility-research/varan-2.0/-/blob/main/vcf_filter.py](https://github.com/bioinformatics-policlinicogemelli/POLE/blob/main/filter_VCF.py)) script.
 Use the following command, which requires a file to input and the preferred path for the output file:
 >$ python filter_VCF.py -i "path the the VCF file" -o "name of the output VCF file"
 
-
+In our script, PyVCF is a required Python package for the analysis of the VCF files. Documentation and available [here](https://pyvcf.readthedocs.io/en/latest/index.html). Installation command available [here](https://pypi.org/project/PyVCF/).
+Other package used by the score calculator include [Pandas](https://pypi.org/project/pandas/), [Numpy](https://pypi.org/project/numpy/), and [Matplotlib](https://pypi.org/project/matplotlib/).
 
 
 
@@ -44,7 +45,7 @@ In total the Script has 6 functions, shown in the table below:
 ||||
 |'calcoloscore'          			|Dictionary, TMB, MSI |Analyzing the given data, the function will increase the score (which starts at "0") of +1 each time one of the given conditions are satisfied(ex. percentage of frequency of events 'C>T' greater than 30%). The output is an integer which represents the Score.	Depending on the value of the Score obtained with the function above, a different comment will pop up as an estimation of the type of observed mutation.	| 3, 4 or 5...... example of the message printed: "Pathogenic POLE mutation"
 ||||
-|'dictoplot'          	|VCF				|Percentage frequency of events of mutation in the form of a Bar Plot. Additional Bar Plot analysis relegated to comparison of the mutation betweeen two data (one 'OLD' and one 'NEW'; the 'NEW one given by degault')| Bar Plot including mutations events, both substitutions and indels.
+|'dictoplot'          	|VCF				|Percentage frequency of events of mutation in the form of a Bar Plot. Additional Bar Plot analysis relegated to comparison of the mutation betweeen two data (one 'OLD' and one 'NEW'; the 'NEW one given by default')| Bar Plot including mutations events, both substitutions and indels.
 
 
 ## Diagram of the Workflow
@@ -83,7 +84,7 @@ or
 You can save the result of your analysis in a text file by typing the following command in the Command Prompt:
 >$ POLE_SCORE.py -f "YOUR_filtered_VCF_FILE.vcf" > VCF_Results.txt
 
-If you prefer to have an output featuring additional details regarding mutation frequency and the codntiotion which raised the score, try to run the 'POLE_SCORE(additional_output_details).py' with the same process.
+If you prefer to have an output featuring additional details regarding mutation frequency and the conditions which raised the score, try to run the 'POLE_SCORE(additional_output_details).py' with the same process.
 
 
 ## What raises the Score?
