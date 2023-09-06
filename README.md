@@ -108,10 +108,10 @@ Given a filtered VCF file, the requirement to find a POLE mutation are:
 ```mermaid
 
 graph TD
-A[if C>A over 20%] --> B(Score +1)
-F[if T>G over 20%] --> B(Score +1)
-G[if Indels below 20%] --> B(Score +1)
-H[if C>G below 0.6%] --> B(Score +1)
+A[if C>A over 6.6%] --> B(Score +1)
+F[if T>G over 4%] --> B(Score +1)
+G[if Indels below 4%] --> B(Score +1)
+H[if C>G below 4.6%] --> B(Score +1)
 I[if TMB over 100 mut/Mb] --> B(Score +1)
 J[if Recurrent Mutations] --> B(Score +1)
 K[if C>T over 30%] --> B(Score +1)
