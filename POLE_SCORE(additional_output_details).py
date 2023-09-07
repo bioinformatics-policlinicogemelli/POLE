@@ -1,6 +1,7 @@
-#Script che genera un dizionario che conta i tipi di mutazioni presenti in un VCF filtrato
+#The following script generates a dictionari depending on the mutation frequency in an input VCF
 #Dopo questo genera uno score in base ai risultati presenti nel dictionary e ti riporta varie voci di output in base al risultato dello score.
 #le richieste di output presenti in questo script sono basate sull'articolo "Interpretation of somatic POLE mutations in endometrial carcinoma" (Castillo et. all, 2020)
+
 
 import vcf
 import numpy as np
@@ -8,25 +9,19 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def printheader(file):
-    vcf_reader = vcf.Reader(open(file, 'r'))
-    for line in vcf_reader:
-        if line.startswith('##'):# This is a metadata line
-            header = line.strip()
-        #elif line.startswith('#'):# This is the header line
-        #    header = line.strip()
-        return header
 
-
-#il risultato della funzione def dizionario(file) riporta un dizionario che in cui le mutazioni sono le keys e i valori sono la frequenza in cui queste mutazioni appaiono nel VCF
-def dizionario(file):
+#this function generates a dictionary with the type of mutations as keys and the amount of times the specific mutations occurs as values dicto che in cui le mutazioni sono le keys e i valori sono la Frequency in cui queste mutazioni appaiono nel VCF
+def dicto(file):
    
-    #formazione del dizionario vuoto
+#this function generates a dictionary with the type of mutations as keys and the amount of times the specific mutations occurs as values
+   
+    #generation of an initial empty dictionary
     mutations= ('A>C', 'A>G', 'A>T', 'C>A', 'C>G', 'C>T', 'G>A', 'G>C', 'G>T', 'T>A', 'T>C', 'T>G')
     dictionary=dict.fromkeys(mutations)
     number=0
     dictionary=dict.fromkeys(mutations,number)
-    # il dizionario creato qui sarà {'A>C': 0, 'A>G': 0, 'A>T': 0, 'C>A': 0, 'C>G': 0, 'C>T': 0, 'G>A': 0, 'G>C': 0, 'G>T': 0, 'T>A': 0, 'T>C': 0, 'T>G': 0}
+    
+    # the following dictionary will be {'A>C': 0, 'A>G': 0, 'A>T': 0, 'C>A': 0, 'C>G': 0, 'C>T': 0, 'G>A': 0, 'G>C': 0, 'G>T': 0, 'T>A': 0, 'T>C': 0, 'T>G': 0}
     vcf_reader = vcf.Reader(open(file, 'r'))
     #per ogni possibile mutazione aggiungiamo i dati: se "valore in REF" = 'A' e "valore in INT" = 'C', aggiungi un 1 alla key specifica; stessa condizione ripetuta per ogni possibile evento di sostituzione osservabile
     for record in vcf_reader:
@@ -61,7 +56,7 @@ def dizionario(file):
 
 
 
-#funzione che crea un dizionario con posizioni relevant come keys e il tipo di mutazione in quella posizione, dati basati sulla tabella del analisi di POLE nel articolo: "Interpretation of somatic POLE mutations in endometrial carcinoma"
+#funzione che crea un dicto con posizioni relevant come keys e il tipo di mutazione in quella posizione, dati basati sulla tabella del analisi di POLE nel articolo: "Interpretation of somatic POLE mutations in endometrial carcinoma"
 def recurrentmutations(file):
     #positions=[]
     #mutations=[]
@@ -81,38 +76,22 @@ def recurrentmutations(file):
     #print("Posizioni delle mutazioni = ", positions, "\n", "Numero Posizioni = ", len(positions), "\n")
     #print("Mutazioni trovate = ", mutations, "\n", "Numero Mutazioni = ", len(mutations), "\n")
     
-    #questa è la lista di mutazioni che secondo l'articolo sono definibili come "Recurrent". Le keys sono le posizioni trovate tramite sito Varsome per le rispettive mutazioni, e i values sono gli eventi di mutazione chiave
+    #Below the list of "Recurrent" mutations. Le keys sono le posizioni trovate tramite sito Varsome per le rispettive mutazioni, e i values sono gli eventi di mutazione chiave
     #se tali valori coincidono con quelli visti nel VCF filtrato, allora ci sono "current mutations in EC", condizione che aumenta di +1 lo score generale
-
-    ##########ATTENZIONE
-    # dictionary errato dei recurrent, dato che usa come riferimento genoma hg38:
-    #nuova list recurrent per hg19
-    
-    ##### 133252326: ' >A' evento di inserzione delle recurent mutations
-    listrecurrent = {133253184: 'G>C', 133250289: 'C>A', 133250208: 'C>A', 133253151: 'G>A', 133249349: 'G>A', 133252729: 'G>A', 133249847: 'G>A', 133249766: 'G>A', 133249857: 'C>G', 133252327: 'A>G', 133250250: 'G>T', 133250169: 'G>T', 133253157: 'A>C', 133249355: 'A>C', 133225944: 'A>C', 133252735: 'A>C', 133250213: 'G>C', 133249835: 'G>C', 133250189: 'A>T', 133249811: 'A>T', 133252325: 'C>A', 133248833: 'C>A', 133252027: 'C>A', 133245002: 'G>A', 133218351: 'T>C', 133235946: 'C>A', 133250250: 'G>C', 133250238: 'C>T', 133244183: 'C>T', 133225894: 'G>A', 133253208: 'G>A', 133249829: 'G>A', 133249841: 'G>A', 133256623: 'G>A', 133237646: 'A>C', 133215791: 'C>A', 133252023: 'T>C', 133233976: 'C>T', 133214612: 'T>C', 133242015: 'C>A', 133257828: 'G>A'}
-    
     listrecurrent_extended = {133253184: 'G>C', 133250289: 'C>A', 133250208: 'C>A', 133253151: 'G>A', 133249349: 'G>A', 133252729: 'G>A', 133249847: 'G>A', 133249766: 'G>A', 133249857: 'C>G', 133252327: 'A>G', 133250250: 'G>T', 133250169: 'G>T', 133253157: 'A>C', 133249355: 'A>C', 133225944: 'A>C', 133252735: 'A>C', 133250213: 'G>C', 133249835: 'G>C', 133250189: 'A>T', 133249811: 'A>T', 133252325: 'C>A', 133248833: 'C>A', 133252027: 'C>A', 133245002: 'G>A', 133218351: 'T>C', 133235946: 'C>A', 133250250: 'G>C', 133250238: 'C>T', 133244183: 'C>T', 133225894: 'G>A', 133253208: 'G>A', 133249829: 'G>A', 133249841: 'G>A', 133256623: 'G>A', 133237646: 'A>C', 133215791: 'C>A', 133252023: 'T>C', 133233976: 'C>T', 133214612: 'T>C', 133242015: 'C>A', 133257828: 'G>A', 133250250: 'G>C', 133253208: 'G>A', 133249829: 'G>A', 133256623: 'G>A', 133252023: 'T>C', 133257828: 'G>A'}
 
-    #extended = {133245002: 'G>A', 133218351: 'T>C', 133235946: 'C>A', 133250250: 'G>C', 133250238: 'C>T', 133244183: 'C>T', 133225894: 'G>A', 133253208: 'G>A', 133249829: 'G>A', 133249841: 'G>A', 133256623: 'G>A', 133237646: 'A>C', 133215791: 'C>A', 133252023: 'T>C', 133233976: 'C>T', 133214612: 'T>C', 133242015: 'C>A', 133257828: 'G>A', 133220055: 'T>A', 133237689: 'G>T', 133209313: 'C>T', 133248899: 'C>T', 133220556: 'C>T', 133225935: 'C>T', 133236009: 'C>A', 133244117: 'C>A', 133218842: 'C>A', 133237587: 'C>T', 133252006: 'A>G', 133238260: 'G>A', 133252371: 'C>A', 133250162: 'T>C'}
-    
-    #listrecurrent_extended = merge(listrecurrent, extended)
-    
-    
-    #valori alternativi di V411L 132673703: 'C>G', 132673622: 'C>G' da aggiungere una volta risolto il problema del dictionary: tali chiavi annullerebbero i valori precendentemente assegnati: inserirli direttamente non va bene perchè non ci possono essere duplicati nelle chiavi di un dizionario
-    # il dictionary qui include tutti valori presi da Varsome, sia quelli NM_006231.4 che quelli ENST00000535270
     #print("Mut ricorrenti = ", listrecurrent)
     shared_items = {k: listrecurrent_extended[k] for k in listrecurrent_extended if k in totalmuts and listrecurrent_extended[k] == totalmuts[k]}
     if len(shared_items) == 0:
         print("     No Recurrent Mutations found", "\n") 
         return shared_items   
-    else:
-       # print("     Numero Recurrent Mutations trovate: ", len(shared_items)) 
+    else: 
         return shared_items
 
 
 
 #funzione che ritorna la lista di eventi di inserzione e delezione
-def listaindels(file):
+def list_indels(file):
     lista_indels=[]
     lista_inserzioni=[]
     lista_delezioni=[]
@@ -135,7 +114,7 @@ def listaindels(file):
 
 
 #numero totale di elementi nel vcf filtrato, siano essi indels o non indels.
-def eventimutazionetotali(file):
+def totalmutationevents(file):
     totalemutazioni=0
     #totalemutazioni è il numero totale di elementi nel vcf filtrato, siano essi indels o non indels.    
     vcf_reader = vcf.Reader(open(file, 'r'))
@@ -145,70 +124,21 @@ def eventimutazionetotali(file):
     return totalemutazioni
 
 
-
-######calcolo frequenza BED file
-'''       
-def analyze_fasta(file_path):
-    # Initialize variables
-    seq_count = 0
-    seq_lengths = []
-    a_count = 0
-    c_count = 0
-    g_count = 0
-    t_count = 0
-    # Open the file and read its contents
-    with open(file_path, 'r') as f:
-        for line in f:
-            if line.startswith('>'):
-                # This is a header line
-                seq_count += 1
-            else:
-                # This is a sequence line
-                seq_lengths.append(len(line.strip()))
-                total_length += len(line.strip())
-                a_count += line.count('A')
-                a_count += line.count('a')
-                c_count += line.count('C')
-                c_count += line.count('c')
-                g_count += line.count('G')
-                g_count += line.count('g')
-                t_count += line.count('T')
-                t_count += line.count('t')
-    # Calculate statistics
-    min_length = min(seq_lengths)
-    max_length = max(seq_lengths)
-    avg_length = total_length / seq_count
-    a_content = a_count / total_length * 100
-    c_content = c_count / total_length * 100
-    g_content = g_count / total_length * 100
-    t_content = t_count / total_length * 100
-    # Print the results
-    print(f"Number of sequences: {seq_count}")
-    print(f"Minimum length: {min_length}")
-    print(f"Maximum length: {max_length}")
-    print(f"Average length: {avg_length:.2f}")
-    print(f"Total length: {total_length}")
-    print(f"A content: {a_content:.2f}%")
-    print(f"C content: {c_content:.2f}%")
-    print(f"G content: {g_content:.2f}%")
-    print(f"T content: {t_content:.2f}%")
-'''
-
-#ADESSO CALCOLA LO SCORE, cioè la frequenza delle specifiche mutazioni
-def valorepercentuale(file):
-    dict = dizionario(file)
+#Estimation of the mutation frequencies
+def mutationsfrequency(file):
+    dict = dicto(file)
     totalsos = sum(dict.values())
     #totalsos è la conta totale degli eventi di sostituzione osservati (eventi come gli indels sono scartati da questa conta)
     listpercent = []
     print('PERCENTUALE DELLE MUTAZIONI OSSERVATE RISPETTO AL TOTALE: ')
     for key, value in dict.items():
-        percent = round((int(value) / totalsos),2)*100 #frequenza percentuale "classico" 
-        #percent2 = percent*1.98/ 38 # frequenza percentuale modificata in relazione alle proporzioni usate da Castillo; 38 : frequenza_castillo = 1,98 : frequenza_TSO500
+        percent = round((int(value) / totalsos),2)*100 #Frequency percentuale "classico" 
+        #percent2 = percent*1.98/ 38 # Frequency percentuale modificata in relazione alle proporzioni usate da Castillo; 38 : Frequency_castillo = 1,98 : Frequency_TSO500
     #########    if user_input.lower() == 'exo':
-        print("Frequenza in Percentuale di mutazione:", key, "=", percent, "%")
+        print("Frequency in Percentuale di mutazione:", key, "=", percent, "%")
         listpercent.append(percent)
     #########    elif user_input.lower() == 'panel':
-    #########        print("Frequenza in Percentuale di mutazione:", key, "=", percent2, "%")
+    #########        print("Frequency in Percentuale di mutazione:", key, "=", percent2, "%")
     #########        listpercent.append(percent2)
     #return listpercent
     return ' '
@@ -216,33 +146,20 @@ def valorepercentuale(file):
 
 
 #CALCOLO SCORE IN BASE AI NOSTRI PARAMETRI PRESI DA DICTIONARY (LISTA_INDELS E NUMERO DI EVENTI TOTALI)
-#def calcoloscore(file, TMB):
-def calcoloscore(file, TMB):
+#def polescore(file, TMB):
+def polescore(file, TMB):
   
     score=0
     
-    print ("CALCOLO DELLO SCORE", "\n")
+    print ("POLE SCORE", "\n")
     print("A seguire sono mostrate le condizioni rispettate, ognuna di esse aumenta lo Score di +1.")
-    print("(La mancanza di Recurrent Mutations non porta a un aumento dello score)", "\n")
-    dictionary = dizionario(file)
-    lista_indels= listaindels(file)
-    totalemutazioni = eventimutazionetotali(file)
+    print("(Lack of Recurrent Mutations does not raise the Score)", "\n")
+    dictionary = dicto(file)
+    lista_indels= list_indels(file)
+    totalemutazioni = totalmutationevents(file)
     totalsos = sum(dictionary.values())
-    #totalsos anche qui è la conta totale degli eventi di sostituzione osservati (eventi come gli indels sono scartati da questa conta)
-    
+    #totalsos anche qui è la conta totale degli observed substitution events (indels are excluded)
 
-    
-    #if int(TMB)>= 100: #TMB over 100mut/Mb
-    #    print ("+    Tumour Mutational Burden maggiore di 100 mut/Mb. TMB =", TMB, "\n")
-    #    score +=1
-    #if int(MSI) >= ((int(totalemutazioni))*30)%100: # MSI-H risultano da valori di MSI >=30% di loci MSI instabili (>2 or more of the 5 loci)
-       # print ("+    DNA Microsatellite Instability (MSI) Detected.   MSI site = ", MSI, "\n")
-       # score +=1
-####user_input = input('Seleziona modalità di analisi (exo / panel): ')    
-####if user_input.lower() == 'panel':
-        ###############################
-        ##modificate le percentuali
-        ###############################
 
     print('Percentuali utilizzate per il calcolo dello score modificate rispetto al paper di Castillo et al.', '\n', 'Modifica in base alla proporzione: [38 : frequency_Castillo = 1,98 : frequency_TS0500]', '\n')
     if float(TMB)>= 5.21: #(5.21 = 100*1.98/ 38) #TMB over 100mut/Mb
@@ -257,8 +174,8 @@ def calcoloscore(file, TMB):
                 score +=1
                 
             print("                    Quantità di C>A: ", dictionary["C>A"])
-            print("                    Frequenza C>A: ", round((int(value) / totalsos),4)*100, " %")
-            print("                    Frequenza C>A rispetto alle mutazioni totali: ", round((int(value) / totalemutazioni),3)*100, " %", "\n")
+            print("                    Frequency C>A: ", round((int(value) / totalsos),4)*100, " %")
+            print("                    Frequency C>A compared to total mutations: ", round((int(value) / totalemutazioni),3)*100, " %", "\n")
             print("\n")   
                
         if key=="T>G": #T>G over 4%
@@ -268,8 +185,8 @@ def calcoloscore(file, TMB):
                 score +=1
                 
             print("                    Quantità di T>G: ", dictionary["T>G"])
-            print("                    Frequenza T>G: ", round((int(value) / totalsos),3)*100, " %")
-            print("                    Frequenza T>G rispetto alle mutazioni totali: ", round((int(value) / totalemutazioni),3)*100, " %", "\n")
+            print("                    Frequency T>G: ", round((int(value) / totalsos),3)*100, " %")
+            print("                    Frequency T>G compared to total mutations: ", round((int(value) / totalemutazioni),3)*100, " %", "\n")
             print("\n")  
             
         if key=="C>G": #C>G below 0.6%
@@ -278,12 +195,12 @@ def calcoloscore(file, TMB):
                 score +=1
                 
             print("                    Quantità di C>G: ", dictionary["C>G"])
-            print("                    Frequenza C>G: ", round((int(value) / totalsos),4)*100, " %")
-            print("                    Frequenza C>G rispetto alle mutazioni totali: ", round((int(value) / totalemutazioni), 3)*100, " %", "\n")
+            print("                    Frequency C>G: ", round((int(value) / totalsos),4)*100, " %")
+            print("                    Frequency C>G compared to total mutations: ", round((int(value) / totalemutazioni), 3)*100, " %", "\n")
             print("\n") 
             
     ratio_indels=round((len(lista_indels)/ totalemutazioni),4) * 100
-    #Qui abbiamo la frequenza delle indels rispetto al totale
+    #This is the Indels Frequency compared to the total amount of mutations
     
     
     score += 1 
@@ -296,35 +213,6 @@ def calcoloscore(file, TMB):
     print ("                    Ratio indels =", ratio_indels, "%")
     print ("        ###################################################")
     print ("\n")
-    
-    #elif user_input.lower() == 'exo':
-            ###############################
-            ##percentuali originali
-            ###############################
-     #   print('Percentuali utilizzate per il calcolo dello score basate sul paper di Castillo et al.', '\n')
-      #  if int(TMB)>= 100: #TMB over 100mut/Mb
-        #    print ("+    Tumour Mutational Burden maggiore di 100 mut/Mb. TMB =", TMB, "\n")
-       #     score +=1        
-        #for key, value in dictionary.items():
-
-         #   if key=="C>A": #C>A over 20%
-          ##      if round((int(value) / totalsos),2)*100 >= 20:
-           #         print('+    Mutazioni C>A uguali o superiori al 20%','\n')
-             #       score +=1
-            #if key=="T>G": #T>G over 4%
-              #  if round((int(value) / totalsos),2)*100 >= 4:
-               #     print('+    Mutazioni T>G uguali o superiori al 4%','\n')
-                #    score +=1
-            #if key=="C>G": #C>G below 0.6%
-             #   if round((int(value) / totalsos),2)*100 <= 0.6:
-              #      print('+    Mutazioni C>G uguali o inferiori al 0.6%','\n')
-               #     score +=1
-
-       # ratio_indels=round((len(lista_indels)/ totalemutazioni),2) * 100
-        #Qui abbiamo la frequenza delle indels rispetto al totale
-       # if ratio_indels <= 5: #Indels below 5%
-        #    print('+    Quantità di indels uguale o inferiore al 5%','\n')
-         #   score+=1
 
     
     response="Recurrent Mutations not found"
@@ -350,16 +238,16 @@ def calcoloscore(file, TMB):
     return output
 
 
-def calcoloscore_CASTILLO(file, TMB):
+def polescore_CASTILLO(file, TMB):
   
     score=0
     
     print("CALCOLO DELLO SCORE", "\n")
     print("A seguire sono mostrate le condizioni rispettate, ognuna di esse aumenta lo Score di +1.")
     print("(La mancanza di Recurrent Mutations non porta a un aumento dello score)", "\n")
-    dictionary = dizionario(file)
-    lista_indels= listaindels(file)
-    totalemutazioni = eventimutazionetotali(file)
+    dictionary = dicto(file)
+    lista_indels= list_indels(file)
+    totalemutazioni = totalmutationevents(file)
     totalsos = sum(dictionary.values())
     #totalsos anche qui è la conta totale degli eventi di sostituzione osservati (eventi come gli indels sono scartati da questa conta)
     
@@ -390,8 +278,8 @@ def calcoloscore_CASTILLO(file, TMB):
                 score +=1
                 
             print("                    Quantità di C>A: ", dictionary["C>A"])
-            print("                    Frequenza C>A: ", round((int(value) / totalsos),4)*100, " %")
-            print("                    Frequenza C>A rispetto alle mutazioni totali: ", round((int(value) / totalemutazioni),3)*100, " %", "\n")
+            print("                    Frequency C>A: ", round((int(value) / totalsos),4)*100, " %")
+            print("                    Frequency C>A compared to total mutations: ", round((int(value) / totalemutazioni),3)*100, " %", "\n")
             print("\n")   
             ca_perc=round((int(value) / totalsos),4)*100 
         if key=="T>G": #T>G over 4%
@@ -401,8 +289,8 @@ def calcoloscore_CASTILLO(file, TMB):
                 score +=1
                 
             print("                    Quantità di T>G: ", dictionary["T>G"])
-            print("                    Frequenza T>G: ", round((int(value) / totalsos),3)*100, " %")
-            print("                    Frequenza T>G rispetto alle mutazioni totali: ", round((int(value) / totalemutazioni),3)*100, " %", "\n")
+            print("                    Frequency T>G: ", round((int(value) / totalsos),3)*100, " %")
+            print("                    Frequency T>G compared to total mutations: ", round((int(value) / totalemutazioni),3)*100, " %", "\n")
             print("\n")  
             tg_perc=round((int(value) / totalsos),4)*100 
         if key=="C>G": #C>G below 0.6%
@@ -411,13 +299,13 @@ def calcoloscore_CASTILLO(file, TMB):
                 score +=1
                 
             print("                    Quantità di C>G: ", dictionary["C>G"])
-            print("                    Frequenza C>G: ", round((int(value) / totalsos),4)*100, " %")
-            print("                    Frequenza C>G rispetto alle mutazioni totali: ", round((int(value) / totalemutazioni), 3)*100, " %", "\n")
+            print("                    Frequency C>G: ", round((int(value) / totalsos),4)*100, " %")
+            print("                    Frequency C>G compared to total mutations: ", round((int(value) / totalemutazioni), 3)*100, " %", "\n")
             print("\n") 
             cg_perc=round((int(value) / totalsos),4)*100 
             
     ratio_indels=round((len(lista_indels)/ totalemutazioni),4) * 100
-    #Qui abbiamo la frequenza delle indels rispetto al totale
+    #Qui abbiamo la Frequency delle indels rispetto al totale
     
     
 
@@ -430,36 +318,6 @@ def calcoloscore_CASTILLO(file, TMB):
     print ("                    Ratio indels =", ratio_indels, "%")
     # print ("        ###################################################")
     print ("\n")
-    
-    #elif user_input.lower() == 'exo':
-            ###############################
-            ##percentuali originali
-            ###############################
-     #   print('Percentuali utilizzate per il calcolo dello score basate sul paper di Castillo et al.', '\n')
-      #  if int(TMB)>= 100: #TMB over 100mut/Mb
-        #    print ("+    Tumour Mutational Burden maggiore di 100 mut/Mb. TMB =", TMB, "\n")
-       #     score +=1        
-        #for key, value in dictionary.items():
-
-         #   if key=="C>A": #C>A over 20%
-          ##      if round((int(value) / totalsos),2)*100 >= 20:
-           #         print('+    Mutazioni C>A uguali o superiori al 20%','\n')
-             #       score +=1
-            #if key=="T>G": #T>G over 4%
-              #  if round((int(value) / totalsos),2)*100 >= 4:
-               #     print('+    Mutazioni T>G uguali o superiori al 4%','\n')
-                #    score +=1
-            #if key=="C>G": #C>G below 0.6%
-             #   if round((int(value) / totalsos),2)*100 <= 0.6:
-              #      print('+    Mutazioni C>G uguali o inferiori al 0.6%','\n')
-               #     score +=1
-
-       # ratio_indels=round((len(lista_indels)/ totalemutazioni),2) * 100
-        #Qui abbiamo la frequenza delle indels rispetto al totale
-       # if ratio_indels <= 5: #Indels below 5%
-        #    print('+    Quantità di indels uguale o inferiore al 5%','\n')
-         #   score+=1
-
     
     response="Recurrent Mutations not found"
     recurrent = recurrentmutations(file)    
@@ -485,12 +343,12 @@ def calcoloscore_CASTILLO(file, TMB):
 
 
 #CALCOLO SCORE IN BASE AI NOSTRI PARAMETRI PRESI DA DICTIONARY (LISTA_INDELS E NUMERO DI EVENTI TOTALI)
-#def calcoloscore(file, TMB):
-def calcoloscore_TS0500(file, TMB):
+#def polescore(file, TMB):
+def polescore_TS0500(file, TMB):
     score=0
-    dictionary = dizionario(file)
-    lista_indels= listaindels(file)
-    totalemutazioni = eventimutazionetotali(file)
+    dictionary = dicto(file)
+    lista_indels= list_indels(file)
+    totalemutazioni = totalmutationevents(file)
     totalsos = sum(dictionary.values())
     #totalsos anche qui è la conta totale degli eventi di sostituzione osservati (eventi come gli indels sono scartati da questa conta)
 
@@ -532,51 +390,13 @@ def calcoloscore_TS0500(file, TMB):
     return output
 
 
-'''
-###### DICTOPLOT per aggiungere bar plots e hopefully fisher
-#funzione che mostra tramite bar plot la frequenza di mutazione 
-def dictoplot(file):
-    #formazione del dizionario vuoto
-    dictionary = dizionario(file)
-    #indels da aggiungere al plot
-    lista_indels=[]
-    lista_inserzioni=[]
-    lista_delezioni=[]
-    vcf_reader = vcf.Reader(open(file, 'r')) #leggi il vcf di input
-    for record in vcf_reader:
-        for alt in range(0,len(record.ALT)):
-            if len(record.ALT[alt])!=len(record.REF):
-                lista_indels.append(record.REF)
-                if len(record.ALT[alt])>len(record.REF):
-                    lista_inserzioni.append(record.ALT[alt])
-                if len(record.ALT[alt])<len(record.REF):
-                    lista_delezioni.append(record.REF)
-    dictio = {"Ins": len(lista_inserzioni), "Dels": len(lista_delezioni)}
-    dictionary.update(dictio)
-    # creazione del dataset
-    courses = list(dictionary.keys())
-    values = list(dictionary.values()) 
-    fig = plt.figure(figsize = (10, 5))
-    # creazione del bar plot
-    plt.bar(courses, values, color ='green', width = 0.4)
-    plt.xlabel("Mutation events")
-    plt.ylabel("Mutation Frequency")
-    plt.title(str(file))
-    plt.savefig('my_.png')
-    plt.show()
- 
-    return "Bar Plot of the mutations shown."
-
-
-'''
-
 import argparse
 
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(
                     prog = 'Parser e score per dati di VCF', 
-                    description= 'Codice che genera un dizionario che conta i tipi di mutazioni presenti in un VCF filtrato, per poi generare uno score in base ai risultati presenti nel dictionary e riportare varie voci di output in base al risultato dello score.', 
+                    description= 'Codice che genera un dicto che conta i tipi di mutazioni presenti in un VCF filtrato, per poi generare uno score in base ai risultati presenti nel dictionary e riportare varie voci di output in base al risultato dello score.', 
                     epilog = 'Lo "score" è un valore numerico calcolato dalla script e sta a indicare la presenza di specifche condizioni richieste come input. Nella analisi del VCF, se una specifica condizione è rispettata, lo score aumenterà di un punto e il numero finale sarà dato dalla somma di valori rispettati',
                     add_help = True, )
         # arguments
@@ -603,17 +423,17 @@ if __name__ == '__main__':
     print ("HEADER: ", printheader, "\n")
     print('--------------------------', "\n")
     
-    print('Numero mutazioni osservate nel VCF =',"\n", dizionario(folder),'\n')
+    print('Numero mutazioni osservate nel VCF =',"\n", dicto(folder),'\n')
     
-    print('Mutazioni totali osservate = ', eventimutazionetotali(folder),'\n')
+    print('Mutazioni totali osservate = ', totalmutationevents(folder),'\n')
     
-    print(valorepercentuale(folder), '\n')
+    print(mutationsfrequency(folder), '\n')
 
     
     print('--------------------------', "\n")
     
-    print('Eventi di inserzione e delezione trovati = ', listaindels(folder),'\n')
-    print("Numero totale di mutazioni indels = ", len(listaindels(folder)), '\n')
+    print('Eventi di inserzione e delezione trovati = ', list_indels(folder),'\n')
+    print("Numero totale di mutazioni indels = ", len(list_indels(folder)), '\n')
     
     
     print('--------------------------', "\n")  
@@ -625,11 +445,10 @@ if __name__ == '__main__':
     print('--------------------------', "\n")
     
 
-    #print('Commento sullo score = ', calcoloscore(folder, TMB, MSI),'\n')
+    #print('Commento sullo score = ', polescore(folder, TMB, MSI),'\n')
     
-    print('Commento sullo score (CASTILLO) = ',calcoloscore_CASTILLO(folder, TMB),'\n')
-    print('Commento sullo score_TS0500 = ', calcoloscore_TS0500(folder, TMB),'\n')
-    
-    #print(dictoplot(folder), '\n')
+    print('Commento sullo score (CASTILLO) = ',polescore_CASTILLO(folder, TMB),'\n')
+    print('Commento sullo score_TS0500 = ', polescore_TS0500(folder, TMB),'\n')
+
 
 
