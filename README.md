@@ -6,9 +6,9 @@ Repository for pathogenic estimation of POLE mutations via development of a scor
 
 ## The Script
 
-The script overall generates a Dictionary that is composed of the counts of types of mutations found in a filtered VCF file given as input.
+The script overall generates a dictionary that is composed of the counts of types of mutations found in a filtered VCF file given as input.
 
-After this it generates a score: an integer number whose value depends on the data of the dictionary and returns a specific output depending on the score. This putput is mostly a sentence which suggests if the vcf presents a POLE mutation which is pathogenic (Score >= 4), non-pathogenic (Score < 3) or  a variant of unknown isgnificance (score = 3)
+After this it generates a score: an integer number whose value depends on the data of the dictionary and returns a specific output depending on the score. This putput is mostly a sentence which suggests if the VCF presents a POLE mutation which is pathogenic (Score >= 4), non-pathogenic (Score < 3) or a variant of unknown isgnificance (score = 3)
 To generate this score are taken into account not only the data of the Dictionary, but also the list Indels (which comprehend the amoun to observes events of insertion and mutation) and the total number of different mutations observed in the VCF file.
 
 The output files of this script are based on the data available on the following article  ["Interpretation of somatic POLE mutations in endometrial carcinoma"](https://pubmed.ncbi.nlm.nih.gov/31829442/). 
@@ -35,17 +35,16 @@ Other package used by the score calculator include [Pandas](https://pypi.org/pro
 In total the Script has 6 functions, shown in the table below:
 
 
-|FUNZIONE                |INPUT                          |OUTPUT                         |	EXAMPLE OUTPUT
+|FUNCTION                |INPUT                          |OUTPUT                         |	EXAMPLE OUTPUT
 |----------------|-------------------------------|-----------------------------|-----------------------------|
-|'dizionario'						|VCF			|A Dictionary with the number of observed events of substitutions. Keys are the types of mutatioons; Values are the number of said mutations observed.			|{'A>C': 0, 'A>G': 13, 'A>T': 2, 'C>A': 1, 'C>G': 1, 'C>T': 8, 'G>A': 14, 'G>C': 0, 'G>T': 2, 'T>A': 1, 'T>C': 8, 'T>G': 0}
-|'listaindels'        			|VCF           |List including both insertion and deletion events ("Indels").            |	['[CT]', '[AT]', '[AT]', '[GC]', 'TC', 'CG']
+|'dicto'						|VCF			|A Dictionary with the number of observed events of substitutions. Keys are the types of mutatioons; Values are the number of said mutations observed.			|{'A>C': 0, 'A>G': 13, 'A>T': 2, 'C>A': 1, 'C>G': 1, 'C>T': 8, 'G>A': 14, 'G>C': 0, 'G>T': 2, 'T>A': 1, 'T>C': 8, 'T>G': 0}
+|'list_indels'        			|VCF           |List including both insertion and deletion events ("Indels").            |	['[CT]', '[AT]', '[AT]', '[GC]', 'TC', 'CG']
 |'recurrentmutations'        			|VCF           |Dictionary  with the "Recurren Mutations" found in the VCF; Dictionary includes chromosome positions as the keys and mutations as the values.            |	 Numero Recurrent Mutations trovate:  2, Recurrent Mutations =  {12345678: 'C>G', 11223344: 'C>A'}
-|'eventimutazionetotali'          |VCF			|Total number of mutations, including substitutions, deletions and insertions.| 12345
-|'valorepercentuale'          	|VCF				|Percentage frequency of events of mutation compared to the total VCF data for every event of substitution.| A>G mutations = 26.0%; C>T mutations = 3.0 %, ....
+|'totalmutationevents'          |VCF			|Total number of mutations, including substitutions, deletions and insertions.| 12345
+|'mutationsfrequency'          	|VCF				|Percentage frequency of events of mutation compared to the total VCF data for every event of substitution.| A>G mutations = 26.0%; C>T mutations = 3.0 %, ....
 ||||
-|'calcoloscore'          			|Dictionary, TMB, MSI |Analyzing the given data, the function will increase the score (which starts at "0") of +1 each time one of the given conditions are satisfied(ex. percentage of frequency of events 'C>T' greater than 30%). The output is an integer which represents the Score.	Depending on the value of the Score obtained with the function above, a different comment will pop up as an estimation of the type of observed mutation.	| 3, 4 or 5...... example of the message printed: "Pathogenic POLE mutation"
+|'polescore'          			|Dictionary, TMB, MSI |Analyzing the given data, the function will increase the score (which starts at "0") of +1 each time one of the given conditions are satisfied(ex. percentage of frequency of events 'C>T' greater than 30%). The output is an integer which represents the Score.	Depending on the value of the Score obtained with the function above, a different comment will pop up as an estimation of the type of observed mutation.	| 3, 4 or 5...... example of the message printed: "Pathogenic POLE mutation"
 ||||
-|'dictoplot'          	|VCF				|Percentage frequency of events of mutation in the form of a Bar Plot. Additional Bar Plot analysis relegated to comparison of the mutation betweeen two data (one 'OLD' and one 'NEW'; the 'NEW one given by default')| Bar Plot including mutations events, both substitutions and indels.
 
 
 ## Diagram of the Workflow
@@ -55,12 +54,12 @@ UML flow chart available made with [Mermaid](https://mermaidjs.github.io/).
 
 ```mermaid
 graph TD
-A[VCF INPUT FILE] --> B((Dizionario))
+A[VCF INPUT FILE] --> B((dicto))
 A --> D((Tot. Mutazioni))
-A --> C((ListaIndels))
+A --> C((list_indels))
 A --> R((RecurrentMutations))
-B --> F(ValorePercentuale)
-B -- Dictionary--> E{CalcoloScore}
+B --> F(mutationsfrequency)
+B -- Dictionary--> E{polescore}
 C -- List --> E
 R -- Dictionary --> E
 D -- Integer --> E --> Score+Comment
@@ -75,6 +74,15 @@ D -- Integer --> E --> Score+Comment
 An ArgParse has been implemented which allows to call the function in the Terminal.
 Make sure to enter the folder with both the Python script and your filtered VCF File.
 The required input data include the folder where the filtered VCF is positioned and the TMB (Tumor Mutational Burden)
+
+These are the commands that are implemented:
+
+| Options | Description | Type | Required | Example
+|-------------------------|----------------| :---:| :---:|
+|-f <br> --output_folder| <p align="justify">Add this option to insert the path where to save the output folder| string | Yes | /Path/to/file
+|-t <br> --TMB| <p align="justify">Add this option to insert the path to the input tsv file where the vcf files are listed| Integer | Yes | 100
+|-c <br> --Category| <p align="justify">Category of mutations| string | No | "hotspot", "wt", "exo" or "vus"
+
 
 Use the following command to receive the full output of the script:
 >$ python POLE_SCORE.py -f "YOUR_filtered_VCF_FILE.vcf" --TMB (value of the TMB)
