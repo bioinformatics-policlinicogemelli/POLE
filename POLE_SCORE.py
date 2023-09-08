@@ -63,33 +63,33 @@ def recurrentmutations(file):
 
 
 def list_indels(file):
-    lista_indels=[]
+    indels_list=[]
     lista_inserzioni=[]
     lista_delezioni=[]
     vcf_reader = vcf.Reader(open(file, 'r')) #leggi il vcf di input
     for record in vcf_reader:
         for alt in range(0,len(record.ALT)):
             if len(record.ALT[alt])!=len(record.REF):
-                lista_indels.append(record.REF)
+                indels_list.append(record.REF)
                 if len(record.ALT[alt])>len(record.REF):
                     lista_inserzioni.append(record.ALT[alt])
                 if len(record.ALT[alt])<len(record.REF):
                     lista_delezioni.append(record.REF)
     
-    return lista_indels
+    return indels_list
 
 
-def eventimutazionetotali(file):
-    totalemutazioni=0   
+def totalmutationevents(file):
+    mutation_totals=0   
     vcf_reader = vcf.Reader(open(file, 'r'))
     for record in vcf_reader:
-            totalemutazioni+=1
+            mutation_totals+=1
 
-    return totalemutazioni
+    return mutation_totals
 
 
 
-def valorepercentuale(file):
+def mutationsfrequency(file):
     dict = dicto(file)
     totalsos = sum(dict.values())
     listpercent = []
@@ -100,65 +100,12 @@ def valorepercentuale(file):
 
 
 
-def calcoloscore_CASTILLO(file, TMB):
-  
-    score=0
-    
-    dictionary = dicto(file)
-    lista_indels= list_indels(file)
-    totalemutazioni = eventimutazionetotali(file)
-    totalsos = sum(dictionary.values())
 
-    if float(TMB)>= 100: #TMB over 100mut/Mb
-        score +=1
-    for key, value in dictionary.items():
-
-        if key=="C>A": #C>A over 6%
-
-            if round((int(value) / totalsos),4)*100 >= 6:
-                score +=1
-                
-            ca_perc=round((int(value) / totalsos),4)*100 
-        if key=="T>G": #T>G over 4%
-
-            if round((int(value) / totalsos),4)*100 >= 4:
-                score +=1
-                
-            tg_perc=round((int(value) / totalsos),4)*100 
-        if key=="C>G": #C>G below 5%
-            if round((int(value) / totalsos),4)*100 <= 5: 
-                score +=1
-                
-            cg_perc=round((int(value) / totalsos),4)*100 
-            
-    ratio_indels=round((len(lista_indels)/ totalemutazioni),4) * 100
-    
-    
-
-    if ratio_indels <= 4:
-        score+=1
-    
-    response="Recurrent Mutations not found"
-    recurrent = recurrentmutations(file)    
-    if len(recurrent) != 0:
-        response = "+    Recurrent Mutations in EC"
-        score+=1
-    
-    if score >= 4:
-        output = 'Pathogenic POLE mutation'
-    if score == 3:
-        output = 'Variant of unknown significance'
-    if score < 3:
-        output= 'Non-Pathogenic POLE mutation'
-    return score,round(ca_perc,2), round(tg_perc,2),round(cg_perc,2), round(ratio_indels,2)
-
-
-
-def calcoloscore_TS0500(file, TMB):
+def polescore(file, TMB):
     score=0
     dictionary = dicto(file)
-    lista_indels= list_indels(file)
-    totalemutazioni = eventimutazionetotali(file)
+    indels_list= list_indels(file)
+    mutation_totals = totalmutationevents(file)
     totalsos = sum(dictionary.values())
 
     if float(TMB)>= 100: 
@@ -177,7 +124,7 @@ def calcoloscore_TS0500(file, TMB):
             if round((int(value) / totalsos),4)*100 <= 5:
                 score +=1
 
-    ratio_indels=round((len(lista_indels)/ totalemutazioni),4) * 100
+    ratio_indels=round((len(indels_list)/ mutation_totals),4) * 100
     if ratio_indels <= 4:
         score+=1
 
@@ -201,15 +148,16 @@ import argparse
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(
-                    prog = 'Parser e score per dati di VCF', 
-                    description= 'Codice che genera un dicto che conta i tipi di mutazioni presenti in un VCF filtrato, per poi generare uno score in base ai risultati presenti nel dictionary e riportare varie voci di output in base al risultato dello score.', 
-                    epilog = 'Lo "score" è un valore numerico calcolato dalla script e sta a indicare la presenza di specifche condizioni richieste come input. Nella analisi del VCF, se una specifica condizione è rispettata, lo score aumenterà di un punto e il numero finale sarà dato dalla somma di valori rispettati',
+                    prog = 'VCF scoring system for POLE pathogenicity', 
+                    description= 'Script which generates a set of objects that takes in account the mutation events in an input filtered VCF, to thene generate a score which estimates the patogenic nature of the POLE mutation.', 
+                    epilog = 'The generated score is a numeric integer which is derived by the count of specific conditions correlated to the pathogenicity of POLE mutations: during a vcf analysis, if a pathogenicity threshold is met, the score will go up by +1. The final score is given by the sum of all the respected thresholds',
                     add_help = True, )
         # arguments
-    parser.add_argument('-f', '--folder', required=True, help='Pathway per la cartella con il file VCF')
+    parser.add_argument('-f', '--folder', required=True, help='Path to the VCF folder')
     parser.add_argument('-t', '--TMB', required=True, help='Tumour Mutational Burden (TMB)')
     parser.add_argument('-c', '--Category', required=False, help='Category of mutations : hotspot,wt,exo,vus')
     parser.add_argument('-o', '--output', required=False, help='Path of file to store results')
+    
     args = parser.parse_args()
 
     folder = args.folder
@@ -218,14 +166,12 @@ if __name__ == '__main__':
     output=args.output
     
     print("\n")
-    print("Analuzed VCF: ", folder, "\n")
+    print("Analyzed VCF: ", folder, "\n")
 
     
     print('--------------------------', "\n")
-    score_castillo,ca_perc, tg_perc,cg_perc, ratio_indels=calcoloscore_CASTILLO(folder, TMB)
     
-    print('Commento sullo score (CASTILLO) = ',score_castillo ,'\n')
     
     print('##########################', "\n") 
-    score_tso=calcoloscore_TS0500(folder, TMB)
-    print('Commento sullo score (TS0500) = ', calcoloscore_TS0500(folder, TMB),'\n')
+    score_tso=polescore(folder, TMB)
+    print('Score Pathogenicity = ', polescore(folder, TMB),'\n')
