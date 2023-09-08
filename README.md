@@ -54,12 +54,12 @@ UML flow chart available made with [Mermaid](https://mermaidjs.github.io/).
 
 ```mermaid
 graph TD
-A[VCF INPUT FILE] --> B((“Dicto”))
-A --> D((Total_Mutazions))
-A --> C((List_Indels))
-A --> R((Recurrent_Mutations))
-B --> F(Mutation_Frequency)
-B -- Dictionary--> E{Score}
+A[VCF INPUT FILE] --> B((Dizionario))
+A --> D((Tot. Mutazioni))
+A --> C((ListaIndels))
+A --> R((RecurrentMutations))
+B --> F(ValorePercentuale)
+B -- Dictionary--> E{CalcoloScore}
 C -- List --> E
 R -- Dictionary --> E
 D -- Integer --> E --> Score+Comment
