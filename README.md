@@ -59,10 +59,10 @@ A --> D((Total_Mutazions))
 A --> C((List_Indels))
 A --> R((Recurrent_Mutations))
 B --> F(Mutation_Frequency)
-B -- Dictionary--> E{Score}
-C -- List --> E
-R -- Dictionary --> E
-D -- Integer --> E --> Score+Comment
+B --> Dictionary--> E{Score}
+C --> List --> E
+R --> Dictionary --> E
+D --> Integer --> E --> Score+Comment
 ```
 </div>
 
