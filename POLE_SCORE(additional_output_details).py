@@ -68,7 +68,7 @@ def recurrentmutations(file):
                 y= str(record.REF)+">"+str(record.ALT[alt])
                 totalmuts[x] = y
     
-    #Below the list of "Recurrent" mutations. Le keys sono le posizioni trovate tramite sito Varsome per le rispettive mutazioni, e i values sono gli eventi di mutazione chiave
+    #Below the list of "Recurrent" mutations. Keys are the positions on the chromosome obtained by Varsome, values are the specific mutation events defined as recurrent in that position
     listrecurrent_extended = {133253184: 'G>C', 133250289: 'C>A', 133250208: 'C>A', 133253151: 'G>A', 133249349: 'G>A', 133252729: 'G>A', 133249847: 'G>A', 133249766: 'G>A', 133249857: 'C>G', 133252327: 'A>G', 133250250: 'G>T', 133250169: 'G>T', 133253157: 'A>C', 133249355: 'A>C', 133225944: 'A>C', 133252735: 'A>C', 133250213: 'G>C', 133249835: 'G>C', 133250189: 'A>T', 133249811: 'A>T', 133252325: 'C>A', 133248833: 'C>A', 133252027: 'C>A', 133245002: 'G>A', 133218351: 'T>C', 133235946: 'C>A', 133250250: 'G>C', 133250238: 'C>T', 133244183: 'C>T', 133225894: 'G>A', 133253208: 'G>A', 133249829: 'G>A', 133249841: 'G>A', 133256623: 'G>A', 133237646: 'A>C', 133215791: 'C>A', 133252023: 'T>C', 133233976: 'C>T', 133214612: 'T>C', 133242015: 'C>A', 133257828: 'G>A', 133250250: 'G>C', 133253208: 'G>A', 133249829: 'G>A', 133256623: 'G>A', 133252023: 'T>C', 133257828: 'G>A'}
 
     shared_items = {k: listrecurrent_extended[k] for k in listrecurrent_extended if k in totalmuts and listrecurrent_extended[k] == totalmuts[k]}
@@ -138,29 +138,29 @@ def polescore(file, TMB):
     #totalsos is the total count of observed substitution events (indels are excluded)
 
     if float(TMB)>= 100:
-        print ("+    Tumour Mutational Burden maggiore di 100 mut/Mb. TMB =", TMB, "\n")
+        print ("+    Tumour Mutational Burden higher than 100 mut/Mb. TMB =", TMB, "\n")
         score +=1
     for key, value in dictionary.items():
 
         if key=="C>A": #C>A over 6%
 
             if round((int(value) / totalsos),4)*100 >= 6: 
-                print('+    Mutazioni C>A equal or higher than 6%)')
+                print('+    C>A Mutations equal or higher than 6%)')
                 score +=1
                 
             print("                    Amount of C>A: ", dictionary["C>A"])
-            print("                    Frequency C>A: ", round((int(value) / totalsos),4)*100, " %")
+            print("                    Frequency C>A compared to all SNV: ", round((int(value) / totalsos),4)*100, " %")
             print("                    Frequency C>A compared to total mutations: ", round((int(value) / mutation_totals),3)*100, " %", "\n")
             print("\n")   
                
         if key=="T>G":
 
             if round((int(value) / totalsos),4)*100 >= 4:
-                print('+    Mutazioni T>G equal or higher than 4%')
+                print('+    T>G mutations equal or higher than 4%')
                 score +=1
                 
             print("                    Amount of T>G: ", dictionary["T>G"])
-            print("                    Frequency T>G: ", round((int(value) / totalsos),3)*100, " %")
+            print("                    Frequency T>G compared to all SNV: ", round((int(value) / totalsos),3)*100, " %")
             print("                    Frequency T>G compared to total mutations: ", round((int(value) / mutation_totals),3)*100, " %", "\n")
             print("\n")  
             
@@ -170,7 +170,7 @@ def polescore(file, TMB):
                 score +=1
                 
             print("                    Amount of C>G: ", dictionary["C>G"])
-            print("                    Frequency C>G: ", round((int(value) / totalsos),4)*100, " %")
+            print("                    Frequency C>G compared to all SNV: ", round((int(value) / totalsos),4)*100, " %")
             print("                    Frequency C>G compared to total mutations: ", round((int(value) / mutation_totals), 3)*100, " %", "\n")
             print("\n") 
             
@@ -180,7 +180,7 @@ def polescore(file, TMB):
     
     score += 1 
     if ratio_indels <= 4:
-        print('+    Amount of indels below 4% (minore del 4% in Castillo)','\n')
+        print('+    Amount of indels below 4%','\n')
         score-=1
         
     print ("        ###################################################")
@@ -190,7 +190,7 @@ def polescore(file, TMB):
     print ("\n")
 
     
-    response="Recurrent Mutations not found"
+    response= "Recurrent Mutations not found"
     recurrent = recurrentmutations(file)    
     if len(recurrent) != 0:
         response = "+    Recurrent Mutations in EC"
@@ -213,147 +213,13 @@ def polescore(file, TMB):
     return output
 
 
-def polescore_CASTILLO(file, TMB):
-  
-    score=0
-    
-    print("POLE Score", "\n")
-    print("Each one of the parameters which fall into the pathogenic threshold adds +1 to the Score.")
-    print("(Lack of Recurrent Mutations does not raise the Score)", "\n")
-    dictionary = dicto(file)
-    indels_list= list_indels(file)
-    mutation_totals = totalmutationevents(file)
-    totalsos = sum(dictionary.values())
-    #totalsos is the total count of observed substitution events (indels are excluded)
-    
-    if float(TMB)>= 100: #TMB over 100mut/Mb
-        print ("+    Tumour Mutational Burden maggiore di 100 mut/Mb. TMB =", TMB, "\n")
-        score +=1
-    for key, value in dictionary.items():
-
-        if key=="C>A": #C>A over 6%
-
-            if round((int(value) / totalsos),4)*100 >= 6: 
-                print('+    C>A mutations equal or higher than 6%')
-                score +=1
-                
-            print("                    Amount of C>A: ", dictionary["C>A"])
-            print("                    Frequency C>A: ", round((int(value) / totalsos),4)*100, " %")
-            print("                    Frequency C>A compared to total mutations: ", round((int(value) / mutation_totals),3)*100, " %", "\n")
-            print("\n")   
-            ca_perc=round((int(value) / totalsos),4)*100 
-        if key=="T>G": #T>G over 4%
-
-            if round((int(value) / totalsos),4)*100 >= 4:
-                print('+    Mutazioni T>G equal or higher than 4%')
-                score +=1
-                
-            print("                    Amount of T>G mutations: ", dictionary["T>G"])
-            print("                    Frequency T>G: ", round((int(value) / totalsos),3)*100, " %")
-            print("                    Frequency T>G compared to total mutations: ", round((int(value) / mutation_totals),3)*100, " %", "\n")
-            print("\n")  
-            tg_perc=round((int(value) / totalsos),4)*100 
-        if key=="C>G": #C>G below 5%
-            if round((int(value) / totalsos),4)*100 <= 5: 
-                print('+    C>G mutations equal or smaller than 5%')
-                score +=1
-                
-            print("                    Amount of C>G mutations: ", dictionary["C>G"])
-            print("                    Frequency C>G: ", round((int(value) / totalsos),4)*100, " %")
-            print("                    Frequency C>G compared to total mutations: ", round((int(value) / mutation_totals), 3)*100, " %", "\n")
-            print("\n") 
-            cg_perc=round((int(value) / totalsos),4)*100 
-            
-    ratio_indels=round((len(indels_list)/ mutation_totals),4) * 100
-    #Indels frequency compared to the total amount of mutations observed
-    
-    
-
-    if ratio_indels <= 4:  # ##(0.26 = 5*1.98/ 38)  Indels below 4%
-        print('+    Amount of indels equal or higher than 4%','\n')
-        score+=1
-        
-    print ("        ###################################################")
-    print ("                    Number of indels =", len(indels_list))    
-    print ("                    Ratio indels =", ratio_indels, "%")
-    # print ("        ###################################################")
-    print ("\n")
-    
-    response="Recurrent Mutations not found"
-    recurrent = recurrentmutations(file)    
-    if len(recurrent) != 0:
-        response = "+    Recurrent Mutations in EC"
-        print(response, "\n")
-        score+=1
-    #Recurrent mutations are identified if this dictionary is not empty, leading to a +1 to the Score
-
-    
-    print('--------------------------', "\n")
-    
-    print('Current score (CASTILLO) =', score,'\n')
-    
-    #Commento basato sul valore finale dello score
-    if score >= 4:
-        output = 'Pathogenic POLE mutation'
-    if score == 3:
-        output = 'Variant of unknown significance'
-    if score < 3:
-        output= 'Non-Pathogenic POLE mutation'
-    return output
-
-
-def polescore_TS0500(file, TMB):
-    score=0
-    dictionary = dicto(file)
-    indels_list= list_indels(file)
-    mutation_totals = totalmutationevents(file)
-    totalsos = sum(dictionary.values())
-
-    if float(TMB)>= 100: #TMB over 100mut/Mb
-        score +=1
-    for key, value in dictionary.items():
-
-        if key=="C>A": #C>A over 6%
-            if round((int(value) / totalsos),4)*100 >= 6: 
-                score +=1
-               
-        if key=="T>G": #T>G over 4%
-            if round((int(value) / totalsos),4)*100 >= 4: 
-                score +=1
-            
-        if key=="C>G": #C>G below 4%
-            if round((int(value) / totalsos),4)*100 <= 0.0312: ## (0.0312 = 0.6*1.98/ 38)
-                score +=1
-
-    ratio_indels=round((len(indels_list)/ mutation_totals),4) * 100
-    if ratio_indels <= 4:  # Indels below 4%
-        score+=1
-
-    response="Recurrent Mutations not found"
-    recurrent = recurrentmutations(file)    
-    if len(recurrent) != 0:
-        response = "+    Recurrent Mutations in EC"
-        score+=1
-    
-    print('Current score (TS0500) =', score,'\n')
-    
-    #Commento basato sul valore finale dello score
-    if score >= 4:
-        output = 'Pathogenic POLE mutation'
-    if score == 3:
-        output = 'Variant of unknown significance'
-    if score < 3:
-        output= 'Non-Pathogenic POLE mutation'
-    return output
-
-
 import argparse
 
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(
-                    prog = 'Parser e score per dati di VCF', 
-                    description= 'Codice che genera un dicto che conta i tipi di mutazioni presenti in un VCF filtrato, per poi generare uno score in base ai risultati presenti nel dictionary e riportare varie voci di output in base al risultato dello score.', 
+                    prog = 'VCF scoring system for POLE pathogenicity', 
+                    description= 'Script which generates a set of objects that takes in account the mutation events in an input filtered VCF, to thene generate a score which estimates the patogenic nature of the POLE mutation.', 
                     epilog = 'The generated score is a numeric integer which is derived by the count of specific conditions correlated to the pathogenicity of POLE mutations: during a vcf analysis, if a pathogenicity threshold is met, the score will go up by +1. The final score is given by the sum of all the respected thresholds',
                     add_help = True, )
         # arguments
@@ -361,14 +227,17 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--TMB', required=True, help='Tumour Mutational Burden (TMB)')
     parser.add_argument('-i', '--indels', type= list, required=False, help='List of Indels')
     parser.add_argument('-s', '--analizedscore', type= int, required=False, help='score che rappresenta la presenza o assenza della caratterstiche da noi richieste, analizzando i dati del file VCF di input')
+    parser.add_argument('-c', '--Category', required=False, help='Category of mutations : hotspot,wt,exo,vus')
+    parser.add_argument('-o', '--output', required=False, help='Path of file to store results')
 
     args = parser.parse_args()
 
     folder = args.folder
-    folder2 = args.folder2
     TMB = args.TMB
     indels=args.indels
     analizedscore=args.analizedscore
+    category=args.Category
+    output=args.output
 
     print("\n")
     print("VCF: ", folder, "\n")
@@ -396,9 +265,5 @@ if __name__ == '__main__':
     print('--------------------------', "\n")
     
 
-    #print('Commento sullo score = ', polescore(folder, TMB, MSI),'\n')
     
-    print('Score Pathogenicity = ', polescore_CASTILLO(folder, TMB),'\n')
-
-
-
+    print('Score Pathogenicity = ', polescore(folder, TMB),'\n')
