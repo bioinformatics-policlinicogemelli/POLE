@@ -76,7 +76,7 @@ The required input data include the folder where the filtered VCF is positioned 
 
 These are the commands that are implemented:
 
-|OPTION                |DESCRIPTION                          |TYPE                         |REQUIRED                         |EXAMPLE
+|COMMAND OPTION                |DESCRIPTION                          |TYPE                         |REQUIRED                         |EXAMPLE
 |----------------|-------------------------------|-----------------------------|-----------------------------|-----------------------------|
 |-f <br>--output_folder| <p align="justify">Add this option to insert the path where to save the output folder| string | Yes | /Path/to/file
 |-t <br>--TMB| <p align="justify">Add this option to insert the path to the input tsv file where the vcf files are listed| Integer | Yes | 100
