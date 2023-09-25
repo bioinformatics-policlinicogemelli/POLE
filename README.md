@@ -1,8 +1,8 @@
-# POLE
+# PathoPoleAnalyzer 
 Repository for pathogenic estimation of POLE mutations via development of a score
 
 
-# POLE functions
+# PathoPoleAnalyzer functions
 
 ## The Script
 
