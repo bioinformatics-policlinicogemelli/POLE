@@ -8,7 +8,7 @@ Repository for pathogenic estimation of POLE mutations via development of a scor
 
 The script overall generates a dictionary that is composed of the counts of types of mutations found in a filtered VCF file given as input.
 
-After this it generates a score: an integer number whose value depends on the data of the dictionary and returns a specific output depending on the score. This putput is mostly a sentence which suggests if the VCF presents a POLE mutation which is pathogenic (Score >= 4), non-pathogenic (Score < 3) or a variant of unknown isgnificance (score = 3)
+After this it generates a score: an integer number whose value depends on the data of the dictionary and returns a specific output depending on the score. This output is mostly a sentence which suggests if the VCF presents a POLE mutation which is pathogenic (Score >= 4), non-pathogenic (Score < 3) or a variant of unknown isgnificance (score = 3)
 To generate this score are taken into account not only the data of the Dictionary, but also the list Indels (which comprehend the amoun to observes events of insertion and mutation) and the total number of different mutations observed in the VCF file.
 
 The output files of this script are based on the data available on the following article  ["Interpretation of somatic POLE mutations in endometrial carcinoma"](https://pubmed.ncbi.nlm.nih.gov/31829442/). 
