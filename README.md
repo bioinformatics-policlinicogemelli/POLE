@@ -24,8 +24,8 @@ This can easily be done with the [vcf_filter.py]([https://gitlab.com/gstep-bioin
 Use the following command, which requires a file to input and the preferred path for the output file:
 >$ python filter_VCF.py -i "path the the VCF file" -o "name of the output VCF file"
 
-In our script, PyVCF is a required Python package for the analysis of the VCF files. Documentation and available [here](https://pyvcf.readthedocs.io/en/latest/index.html). Installation command available [here](https://pypi.org/project/PyVCF/).
-Other package used by the score calculator include [Pandas](https://pypi.org/project/pandas/), [Numpy](https://pypi.org/project/numpy/), and [Matplotlib](https://pypi.org/project/matplotlib/).
+PyVCF is a required Python package for the analysis of the VCF files. Documentation and available [here](https://pyvcf.readthedocs.io/en/latest/index.html). Installation command available [here](https://pypi.org/project/PyVCF/).
+Other required packages are [Pandas](https://pypi.org/project/pandas/), [Numpy](https://pypi.org/project/numpy/)
 
 
 
