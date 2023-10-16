@@ -4,8 +4,6 @@ Repository for pathogenic estimation of POLE mutations via development of a scor
 
 # PathoPoleAnalyzer functions
 
-## The Script
-
 The script overall generates a dictionary that is composed of the counts of types of mutations found in a filtered VCF file given as input.
 
 After this it generates a score: an integer number whose value depends on the data of the dictionary and returns a specific output depending on the score. This output is mostly a sentence which suggests if the VCF presents a POLE mutation which is pathogenic (Score >= 4), non-pathogenic (Score < 3) or a variant of unknown isgnificance (score = 3)
