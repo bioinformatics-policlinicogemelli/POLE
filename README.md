@@ -17,18 +17,17 @@ The output files of this script are based on the data available on the following
 
 
 ## Input Files and Requirements
-All the functions of the code take a file / folder as an input
-The required input files are .vcf
+All the functions of the code take a file VCF as an input.
 It is suggested to first filter the vcf that needs to be analyzed.
 This can easily be done with the [vcf_filter.py]([https://gitlab.com/gstep-bioinformatics-core-facility-research/varan-2.0/-/blob/main/vcf_filter.py](https://github.com/bioinformatics-policlinicogemelli/POLE/blob/main/filter_VCF.py)) script.
 Use the following command, which requires a file to input and the preferred path for the output file:
 >$ python filter_VCF.py -i "path the the VCF file" -o "name of the output VCF file"
 
-PyVCF is a required Python package for the analysis of the VCF files. Documentation and available [here](https://pyvcf.readthedocs.io/en/latest/index.html). Installation command available [here](https://pypi.org/project/PyVCF/).
-Other required packages are [Pandas](https://pypi.org/project/pandas/), [Numpy](https://pypi.org/project/numpy/)
-
-
-
+## Requires
+- python == 3.9
+- PyVCF == 0.6.8
+- numpy == 1.23.5
+- pandas == 1.5.2
 
 ## Functions of the Script
 
