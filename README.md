@@ -25,7 +25,7 @@ To calculate this score, PathoPoleAnalyzer evaluates several parameters:
 To reduce the time required for the analysis, it is suggested to first filter the vcf file.
 This can easily be done with the [vcf_filter.py]([https://gitlab.com/gstep-bioinformatics-core-facility-research/varan-2.0/-/blob/main/vcf_filter.py](https://github.com/bioinformatics-policlinicogemelli/POLE/blob/main/filter_VCF.py)) script.
 Use the following command:
->$ python filter_VCF.py -i vcfFilePath -o destinationFilteredVcf
+>$ python filterVCF.py -i vcfFilePath -o destinationFilteredVcf
 
 ### Input Data
 PathoPoleAnalyzer requires a VCF file and a TMB value as input.
@@ -40,12 +40,12 @@ PathoPoleAnalyzer requires a VCF file and a TMB value as input.
 
 
 Use the following command to receive the full output of the script:
->$ python POLE_SCORE.py -f "YOUR_filtered_VCF_FILE.vcf" --TMB (value of the TMB)
+>$ python pathopoleanalyzer.py -f "YOUR_filtered_VCF_FILE.vcf" --TMB (value of the TMB)
 or
->$ python POLE_SCORE.py -f "YOUR_filtered_VCF_FILE.vcf" -t (value of the TMB)
+>$ python pathopoleanalyzer.py -f "YOUR_filtered_VCF_FILE.vcf" -t (value of the TMB)
 
 You can save the result of your analysis in a text file by typing the following command in the Command Prompt:
->$ POLE_SCORE.py -f "YOUR_filtered_VCF_FILE.vcf" > VCF_Results.txt
+>$ pathopoleanalyzer.py -f "YOUR_filtered_VCF_FILE.vcf" > VCF_Results.txt
 
 If you prefer to have an output featuring additional details regarding mutation frequency and the conditions which raised the score, try to run the 'POLE_SCORE(additional_output_details).py' with the same process.
 
