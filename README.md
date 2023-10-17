@@ -41,9 +41,7 @@ You can save the result of your analysis in a text file, using the option ```-o/
 
 ## What raises the Score?
 
-The conditions for which the Score is raised are based on the data available on ["Interpretation of somatic POLE mutations in endometrial carcinoma"](https://pubmed.ncbi.nlm.nih.gov/31829442/)(Castillo et. all, 2020).
-Takin into consideration the different size of the exome of the FPG500 input data featured in our study, the threshold the allowed a raise of the score were modified with a conversione via Median of Medians technique-.
-Given a filtered VCF file, the requirement to find a POLE mutation are:
+The thresholds for the different parameters are readjusted compared to Castillo's article and are as follows:
 
 	C>A substitutions > 6.6%, 
 	T>G substitutions > 4%, 
@@ -82,7 +80,7 @@ The [over-mentioned Paper](https://pubmed.ncbi.nlm.nih.gov/31829442/)(Table 1 an
 
 As mentioned before, if at least one of these next mutations are featured in the analized VCF, the score will rise by +1.
 
-Below the mutations that are considered recurrent in POLE, along wIth chromosomal position, nucloetide substitution and protein change:
+Below the mutations that are considered recurrent in POLE, along with chromosomal position, nucleotide substitution and protein change:
 
 	CHROM: POS			NUCL. SUB.		PROT. CHANGE
 	chr12:133253184		c.857C>G		P286R
