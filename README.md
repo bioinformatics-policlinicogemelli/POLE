@@ -31,21 +31,13 @@ Use the following command:
 PathoPoleAnalyzer requires a VCF file and a TMB value as input.
 
 
-
-|COMMAND OPTION                |DESCRIPTION                          |TYPE                         |REQUIRED                         |EXAMPLE
-|----------------|-------------------------------|-----------------------------|-----------------------------|-----------------------------|
-|-f <br>--output_folder| <p align="justify">Add this option to insert the path where to save the output folder| String | Yes | /Path/to/file
-|-t <br>--TMB| <p align="justify">Add this option to insert the path to the input tsv file where the vcf files are listed| Integer | Yes | 100
-|-c <br>--Category| <p align="justify">Category of mutations| String | No | "hotspot", "wt", "exo" or "vus"
-
-
-Use the following command to receive the full output of the script:
->$ python pathopoleanalyzer.py -f "YOUR_filtered_VCF_FILE.vcf" --TMB (value of the TMB)
+Use the following command to launch PathoPoleAnalyzer:
+>$ python pathopoleanalyzer.py -folder vcfFilePath --TMB TMBvalue
 or
->$ python pathopoleanalyzer.py -f "YOUR_filtered_VCF_FILE.vcf" -t (value of the TMB)
+>$ python pathopoleanalyzer.py -f vcfFilePath -t TMBvalue
 
-You can save the result of your analysis in a text file by typing the following command in the Command Prompt:
->$ pathopoleanalyzer.py -f "YOUR_filtered_VCF_FILE.vcf" > VCF_Results.txt
+You can save the result of your analysis in a text file, using the option ```-o/--output``` 
+>$ pathopoleanalyzer.py -f vcfFilePath -t TMBvalue -o outputFile
 
 If you prefer to have an output featuring additional details regarding mutation frequency and the conditions which raised the score, try to run the 'POLE_SCORE(additional_output_details).py' with the same process.
 
