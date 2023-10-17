@@ -76,9 +76,12 @@ B --> E(If Score <3:) --> N(Non-pathogenic POLE mutation)
 
 ## What is defined as a 'Recurrent Mutation'?
 
-The [over-mentioned Paper](https://pubmed.ncbi.nlm.nih.gov/31829442/)(Table 1 and Table 3 of the Paper) takes in consideration whether POLE mutations were recurrent in ECs within the COSMIC or TCGA databases, as recurrent mutations are more likely to be pathogenic.
+According to [over-mentioned Paper](https://pubmed.ncbi.nlm.nih.gov/31829442/)(Table 1 and Table 3) :
 
-As mentioned before, if at least one of these next mutations are featured in the analized VCF, the score will rise by +1.
+	Recurrent mutations were defined as those present in two or more cancer samples in the COSMIC and TCGA databases 
+ 	combined (cases present in both databases were counted only once). 
+  	A mutation was considered non-recurrent if it was found only one.
+
 
 Below the mutations that are considered recurrent in POLE, along with chromosomal position, nucleotide substitution and protein change:
 
