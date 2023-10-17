@@ -39,9 +39,6 @@ or
 You can save the result of your analysis in a text file, using the option ```-o/--output``` 
 >$ pathopoleanalyzer.py -f vcfFilePath -t TMBvalue -o outputFile
 
-If you prefer to have an output featuring additional details regarding mutation frequency and the conditions which raised the score, try to run the 'POLE_SCORE(additional_output_details).py' with the same process.
-
-
 ## What raises the Score?
 
 The conditions for which the Score is raised are based on the data available on ["Interpretation of somatic POLE mutations in endometrial carcinoma"](https://pubmed.ncbi.nlm.nih.gov/31829442/)(Castillo et. all, 2020).
