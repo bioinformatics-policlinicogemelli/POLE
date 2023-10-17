@@ -155,14 +155,12 @@ if __name__ == '__main__':
         # arguments
     parser.add_argument('-f', '--folder', required=True, help='Path to the VCF folder')
     parser.add_argument('-t', '--TMB', required=True, help='Tumour Mutational Burden (TMB)')
-    parser.add_argument('-c', '--Category', required=False, help='Category of mutations : hotspot,wt,exo,vus')
     parser.add_argument('-o', '--output', required=False, help='Path of file to store results')
     
     args = parser.parse_args()
 
     folder = args.folder
     TMB = args.TMB
-    category=args.Category
     output=args.output
     
     print("\n")
