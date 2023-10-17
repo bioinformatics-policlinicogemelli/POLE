@@ -173,3 +173,10 @@ if __name__ == '__main__':
     print('##########################', "\n") 
     score_tso=polescore(folder, TMB)
     print('Score Pathogenicity = ', polescore(folder, TMB),'\n')
+
+
+
+
+
+
+
