@@ -37,7 +37,7 @@ In total the Script has 6 functions, shown in the table below:
 
 |FUNCTION                |INPUT                          |OUTPUT                         |	EXAMPLE OUTPUT
 |----------------|-------------------------------|-----------------------------|-----------------------------|
-|'dicto'						|VCF			|A Dictionary with the number of observed events of substitutions. Keys are the types of mutatioons; Values are the number of said mutations observed.			|{'A>C': 0, 'A>G': 13, 'A>T': 2, 'C>A': 1, 'C>G': 1, 'C>T': 8, 'G>A': 14, 'G>C': 0, 'G>T': 2, 'T>A': 1, 'T>C': 8, 'T>G': 0}
+|'dicto'						|VCF			|A Dictionary with the number of observed events of substitutions. Keys are the types of mutations; Values are the number of said mutations observed.			|{'A>C': 0, 'A>G': 13, 'A>T': 2, 'C>A': 1, 'C>G': 1, 'C>T': 8, 'G>A': 14, 'G>C': 0, 'G>T': 2, 'T>A': 1, 'T>C': 8, 'T>G': 0}
 |'list_indels'        			|VCF           |List including both insertion and deletion events ("Indels").            |	['[CT]', '[AT]', '[AT]', '[GC]', 'TC', 'CG']
 |'recurrentmutations'        			|VCF           |Dictionary  with the "Recurren Mutations" found in the VCF; Dictionary includes chromosome positions as the keys and mutations as the values.            |	 Numero Recurrent Mutations trovate:  2, Recurrent Mutations =  {12345678: 'C>G', 11223344: 'C>A'}
 |'totalmutationevents'          |VCF			|Total number of mutations, including substitutions, deletions and insertions.| 12345
@@ -137,7 +137,7 @@ The [over-mentioned Paper](https://pubmed.ncbi.nlm.nih.gov/31829442/)(Table 1 an
 
 As mentioned before, if at least one of these next mutations are featured in the analized VCF, the score will rise by +1.
 
-Below the mutations that are considered recurrent in POLE, along wIth chromosomal position, nucloetide substitution and protein change:
+Down below are the mutations that are considered recurrent in POLE, along wIth chromosomal position, nucleotide substitution and protein change:
 
 	CHROM: POS			NUCL. SUB.		PROT. CHANGE
 	chr12:133253184		c.857C>G		P286R
