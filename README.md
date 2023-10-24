@@ -20,7 +20,7 @@ The output files of this script are based on the data available on the following
 All the functions of the code take a file / folder as an input
 The required input files are .vcf
 It is suggested to first filter the vcf that needs to be analyzed.
-This can easily be done with the [vcf_filter.py]([https://gitlab.com/gstep-bioinformatics-core-facility-research/varan-2.0/-/blob/main/vcf_filter.py](https://github.com/bioinformatics-policlinicogemelli/POLE/blob/main/filter_VCF.py)) script.
+This can easily be done with the [filter_VCF.py](https://github.com/bioinformatics-policlinicogemelli/PathoPoleAnalyzer/blob/main/filter_VCF.py) script.
 Use the following command, which requires a file to input and the preferred path for the output file:
 >$ python filter_VCF.py -i "path the the VCF file" -o "name of the output VCF file"
 
