@@ -1,104 +1,47 @@
 # PathoPoleAnalyzer 
-Repository for pathogenic estimation of POLE mutations via development of a score
+
+PathoPoleAnalyzer is a tool for calculating a pathogenicity score for Pole mutations, inspired by the findings presented in the Castillo's article (Castillo et. all, 2020)  ["Interpretation of somatic POLE mutations in endometrial carcinoma"](https://pubmed.ncbi.nlm.nih.gov/31829442/). 
+
+The score is an integer ranging from 0 to 6, indicating whether the POLE mutation is pathogenic (Score >=4), of uncertain significance (Score = 3), or non-pathogenic (Score<3),based on the presence of specific genomic alterations.
+
+To calculate this score, PathoPoleAnalyzer evaluates several parameters:
+- Tumor Mutational Burden (TMB)
+- Presence of recurrent Pole mutations
+- Frequency of C>A substitutions
+- Frequency of C>G substitutions
+- Frequency of T>G substitutions
+- Frequency of Indels (insertions and deletions)
+
+## Requires
+- python == 3.9
+- PyVCF == 0.6.8
+- numpy == 1.23.5
+- pandas == 1.5.2
+
+## Input 
 
 
-# PathoPoleAnalyzer functions
+### Filter vcf
+To reduce the time required for the analysis, it is suggested to first filter the vcf file.
+This can easily be done with the [vcf_filter.py]([https://gitlab.com/gstep-bioinformatics-core-facility-research/varan-2.0/-/blob/main/vcf_filter.py](https://github.com/bioinformatics-policlinicogemelli/POLE/blob/main/filter_VCF.py)) script.
+Use the following command:
+>$ python filterVCF.py -i vcfFilePath -o destinationFilteredVcf
 
-## The Script
-
-The script overall generates a dictionary that is composed of the counts of types of mutations found in a filtered VCF file given as input.
-
-After this it generates a score: an integer number whose value depends on the data of the dictionary and returns a specific output depending on the score. This output is mostly a sentence which suggests if the VCF presents a POLE mutation which is pathogenic (Score >= 4), non-pathogenic (Score < 3) or a variant of unknown isgnificance (score = 3)
-To generate this score are taken into account not only the data of the Dictionary, but also the list Indels (which comprehend the amoun to observes events of insertion and mutation) and the total number of different mutations observed in the VCF file.
-
-The output files of this script are based on the data available on the following article  ["Interpretation of somatic POLE mutations in endometrial carcinoma"](https://pubmed.ncbi.nlm.nih.gov/31829442/). 
-(Castillo et. all, 2020)
+### Input Data
+PathoPoleAnalyzer requires a VCF file and a TMB value as input.
 
 
-
-## Input Files and Requirements
-All the functions of the code take a file / folder as an input
-The required input files are .vcf
-It is suggested to first filter the vcf that needs to be analyzed.
-This can easily be done with the [filter_VCF.py](https://github.com/bioinformatics-policlinicogemelli/PathoPoleAnalyzer/blob/main/filter_VCF.py) script.
-Use the following command, which requires a file to input and the preferred path for the output file:
->$ python filter_VCF.py -i "path the the VCF file" -o "name of the output VCF file"
-
-In our script, PyVCF is a required Python package for the analysis of the VCF files. Documentation and available [here](https://pyvcf.readthedocs.io/en/latest/index.html). Installation command available [here](https://pypi.org/project/PyVCF/).
-Other package used by the score calculator include [Pandas](https://pypi.org/project/pandas/), [Numpy](https://pypi.org/project/numpy/), and [Matplotlib](https://pypi.org/project/matplotlib/).
-
-
-
-
-## Functions of the Script
-
-In total the Script has 6 functions, shown in the table below:
-
-
-|FUNCTION                |INPUT                          |OUTPUT                         |	EXAMPLE OUTPUT
-|----------------|-------------------------------|-----------------------------|-----------------------------|
-|'dicto'						|VCF			|A Dictionary with the number of observed events of substitutions. Keys are the types of mutations; Values are the number of said mutations observed.			|{'A>C': 0, 'A>G': 13, 'A>T': 2, 'C>A': 1, 'C>G': 1, 'C>T': 8, 'G>A': 14, 'G>C': 0, 'G>T': 2, 'T>A': 1, 'T>C': 8, 'T>G': 0}
-|'list_indels'        			|VCF           |List including both insertion and deletion events ("Indels").            |	['[CT]', '[AT]', '[AT]', '[GC]', 'TC', 'CG']
-|'recurrentmutations'        			|VCF           |Dictionary  with the "Recurren Mutations" found in the VCF; Dictionary includes chromosome positions as the keys and mutations as the values.            |	 Numero Recurrent Mutations trovate:  2, Recurrent Mutations =  {12345678: 'C>G', 11223344: 'C>A'}
-|'totalmutationevents'          |VCF			|Total number of mutations, including substitutions, deletions and insertions.| 12345
-|'mutationsfrequency'          	|VCF				|Percentage frequency of events of mutation compared to the total VCF data for every event of substitution.| A>G mutations = 26.0%; C>T mutations = 3.0 %, ....
-||||
-|'polescore'          			|Dictionary, TMB, MSI |Analyzing the given data, the function will increase the score (which starts at "0") of +1 each time one of the given conditions are satisfied(ex. percentage of frequency of events 'C>T' greater than 30%). The output is an integer which represents the Score.	Depending on the value of the Score obtained with the function above, a different comment will pop up as an estimation of the type of observed mutation.	| 3, 4 or 5...... example of the message printed: "Pathogenic POLE mutation"
-||||
-
-
-## Diagram of the Workflow
-
-UML flow chart available made with [Mermaid](https://mermaidjs.github.io/). 
-<div class="center">
-
-```mermaid
-graph TD
-A[VCF INPUT FILE] --> B((Dicto))
-A --> D((Tot. Mutations))
-A --> C((List Indels))
-A --> R((Recurrent Mutations))
-B --> F(Mutation frequencies)
-B -- Dictionary--> E{Score}
-C -- List --> E
-R -- Dictionary --> E
-D -- Integer --> E --> Score+Comment
-```
-</div>
-
-
-
-## Call the Script in the Command Prompt
-
-An ArgParse has been implemented which allows to call the function in the Terminal.
-Make sure to enter the folder with both the Python script and your filtered VCF File.
-The required input data include the folder where the filtered VCF is positioned and the TMB (Tumor Mutational Burden)
-
-These are the commands that are implemented:
-
-|COMMAND OPTION                |DESCRIPTION                          |TYPE                         |REQUIRED                         |EXAMPLE
-|----------------|-------------------------------|-----------------------------|-----------------------------|-----------------------------|
-|-f <br>--output_folder| <p align="justify">Add this option to insert the path where to save the output folder| String | Yes | /Path/to/file
-|-t <br>--TMB| <p align="justify">Add this option to insert the path to the input tsv file where the vcf files are listed| Integer | Yes | 100
-|-c <br>--Category| <p align="justify">Category of mutations| String | No | "hotspot", "wt", "exo" or "vus"
-
-
-Use the following command to receive the full output of the script:
->$ python POLE_SCORE.py -f "YOUR_filtered_VCF_FILE.vcf" --TMB (value of the TMB)
+Use the following command to launch PathoPoleAnalyzer:
+>$ python pathopoleanalyzer.py -folder vcfFilePath --TMB TMBvalue
 or
->$ python POLE_SCORE.py -f "YOUR_filtered_VCF_FILE.vcf" -t (value of the TMB)
+>$ python pathopoleanalyzer.py -f vcfFilePath -t TMBvalue
 
-You can save the result of your analysis in a text file by typing the following command in the Command Prompt:
->$ POLE_SCORE.py -f "YOUR_filtered_VCF_FILE.vcf" > VCF_Results.txt
-
-If you prefer to have an output featuring additional details regarding mutation frequency and the conditions which raised the score, try to run the 'POLE_SCORE(additional_output_details).py' with the same process.
-
+You can save the result of your analysis in a text file, using the option ```-o/--output``` 
+>$ pathopoleanalyzer.py -f vcfFilePath -t TMBvalue -o outputFile
 
 ## What raises the Score?
 
-The conditions for which the Score is raised are based on the data available on ["Interpretation of somatic POLE mutations in endometrial carcinoma"](https://pubmed.ncbi.nlm.nih.gov/31829442/)(Castillo et. all, 2020).
-Takin into consideration the different size of the exome of the FPG500 input data featured in our study, the threshold the allowed a raise of the score were modified with a conversione via Median of Medians technique-.
-Given a filtered VCF file, the requirement to find a POLE mutation are:
+The thresholds for the different parameters are readjusted compared to Castillo's article and are as follows:
 
 	C>A substitutions > 6.6%, 
 	T>G substitutions > 4%, 
@@ -133,11 +76,14 @@ B --> E(If Score <3:) --> N(Non-pathogenic POLE mutation)
 
 ## What is defined as a 'Recurrent Mutation'?
 
-The [over-mentioned Paper](https://pubmed.ncbi.nlm.nih.gov/31829442/)(Table 1 and Table 3 of the Paper) takes in consideration whether POLE mutations were recurrent in ECs within the COSMIC or TCGA databases, as recurrent mutations are more likely to be pathogenic.
+According to [over-mentioned Paper](https://pubmed.ncbi.nlm.nih.gov/31829442/)(Table 1 and Table 3) :
 
-As mentioned before, if at least one of these next mutations are featured in the analized VCF, the score will rise by +1.
+	Recurrent mutations were defined as those present in two or more cancer samples in the COSMIC and TCGA databases 
+ 	combined (cases present in both databases were counted only once). 
+  	A mutation was considered non-recurrent if it was found only one.
 
-Down below are the mutations that are considered recurrent in POLE, along wIth chromosomal position, nucleotide substitution and protein change:
+
+Below the mutations that are considered recurrent in POLE, along with chromosomal position, nucleotide substitution and protein change:
 
 	CHROM: POS			NUCL. SUB.		PROT. CHANGE
 	chr12:133253184		c.857C>G		P286R

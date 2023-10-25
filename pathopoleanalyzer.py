@@ -124,6 +124,11 @@ def polescore(file, TMB):
             if round((int(value) / totalsos),4)*100 <= 5:
                 score +=1
 
+    
+    c_a=round(dictionary["C>A"]/totalsos,2)*100
+    c_g=round(dictionary["C>G"]/totalsos,2)*100
+    t_g=round(dictionary["T>G"]/totalsos,2)*100
+
     ratio_indels=round((len(indels_list)/ mutation_totals),4) * 100
     if ratio_indels <= 4:
         score+=1
@@ -140,7 +145,7 @@ def polescore(file, TMB):
         output = 'Variant of unknown significance'
     if score < 3:
         output= 'Non-Pathogenic POLE mutation'
-    return score
+    return score,TMB,recurrent,ratio_indels,c_a,c_g,t_g
 
 
 import argparse
@@ -155,14 +160,12 @@ if __name__ == '__main__':
         # arguments
     parser.add_argument('-f', '--folder', required=True, help='Path to the VCF folder')
     parser.add_argument('-t', '--TMB', required=True, help='Tumour Mutational Burden (TMB)')
-    parser.add_argument('-c', '--Category', required=False, help='Category of mutations : hotspot,wt,exo,vus')
     parser.add_argument('-o', '--output', required=False, help='Path of file to store results')
     
     args = parser.parse_args()
 
     folder = args.folder
     TMB = args.TMB
-    category=args.Category
     output=args.output
     
     print("\n")
@@ -173,5 +176,25 @@ if __name__ == '__main__':
     
     
     print('##########################', "\n") 
-    score_tso=polescore(folder, TMB)
+    score_tso,TMB,recurrent,ratio_indels,c_a,c_g,t_g=polescore(folder, TMB)
     print('Score Pathogenicity = ', polescore(folder, TMB),'\n')
+    
+    
+    if args.output: 
+        if os.path.exists(output):
+            file=open(output,"a")
+        else:
+            file=open(output,"w")
+            file.write("\t".join(["SampleID","TMB","RecurrentMutation","Indels","C>A","C>G","T>G","Score"])+"\n")
+        
+        sample_id=folder.split("/")[-1]
+
+        file.write("\t".join([str(sample_id),str(TMB).strip(),str(recurrent), str(ratio_indels),str(c_a),str(c_g),str(t_g),str(score_tso)])+"\n")
+            
+
+
+
+
+
+
+
