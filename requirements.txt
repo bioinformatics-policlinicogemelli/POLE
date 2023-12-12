@@ -1,0 +1,6 @@
+pandas
+configparser 
+PyVCF
+setuptools<58
+loguru
+numpy
