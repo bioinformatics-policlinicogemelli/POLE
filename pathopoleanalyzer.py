@@ -239,7 +239,7 @@ if __name__ == '__main__':
         else:
             tmb=pd.read_csv(args.TMB,sep="\t")
             
-            results=pd.DataFrame(columns=["SampleID","TMB","RecurrentMutation","Indels","C>A","C>G","T>G","Score"])
+            results=pd.DataFrame()
             for file in files:
 
                 tmb_sample=tmb.loc[tmb["Sample"]==file,"TMB"].values[0]
