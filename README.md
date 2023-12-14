@@ -1,6 +1,6 @@
 # PathoPoleAnalyzer 
 
-PathoPoleAnalyzer is a tool for calculating a pathogenicity score for Pole mutations, inspired by the findings presented in the Castillo's article (Castillo et. all, 2020)  ["Interpretation of somatic POLE mutations in endometrial carcinoma"](https://pubmed.ncbi.nlm.nih.gov/31829442/). 
+PathoPoleAnalyzer is a tool for calculating a pathogenicity score for Pole mutations.
 
 The score is an integer ranging from 0 to 6, indicating whether the POLE mutation is pathogenic (Score >=4), of uncertain significance (Score = 3), or non-pathogenic (Score<3),based on the presence of specific genomic alterations.
 
@@ -12,40 +12,54 @@ To calculate this score, PathoPoleAnalyzer evaluates several parameters:
 - Frequency of T>G substitutions
 - Frequency of Indels (insertions and deletions)
 
-## Requires
-- python == 3.9
-- PyVCF == 0.6.8
-- numpy == 1.23.5
-- pandas == 1.5.2
+## Requirements and installation
 
-## Input 
+A list of requirements can be found in `requirements.txt` 
+
+To automatically install PathoPoleAnalyzer, use the following command:
+
+>python3 -m pip install -r /path/to/requirements.txt
+
+
+## Input Data
+
+PathoPoleAnalyzer requires a VCF file and a TMB value as input.
+
+PathoPoleAnalyzer accepts either a single vcf file or a folder containing multiple vcf files as input.
+
+In the case of a single file, the value of TMB can be passed directly as the value of the ```--TMB``` \ ```--t``` argument. 
+If the input is a folder, the value of the ```--TMB``` argument must be a file containing sampleID and the value of TMB. For a template of the file, see ```TMB.txt```
+
+Use the following command to launch PathoPoleAnalyzer:
+
+>$ python3 pathopoleanalyzer.py -i vcfFilePath -t TMBvalue
+
+or
+
+>$ python3 pathopoleanalyzer.py -i vcfFileFolder -t TMB.txt
 
 
 ### Filter vcf
-To reduce the time required for the analysis, it is suggested to first filter the vcf file.
-This can easily be done with the [vcf_filter.py]([https://gitlab.com/gstep-bioinformatics-core-facility-research/varan-2.0/-/blob/main/vcf_filter.py](https://github.com/bioinformatics-policlinicogemelli/POLE/blob/main/filter_VCF.py)) script.
-Use the following command:
->$ python filterVCF.py -i vcfFilePath -o destinationFilteredVcf
+To reduce the time required for the analysis, PathoPoleAnalyzer automatically filter the input vcf file. Filtered vcf are saved in 
+```filtered_vcf``` folder.  
 
-### Input Data
-PathoPoleAnalyzer requires a VCF file and a TMB value as input.
+### Results
+Score results are shown in the log and saved in the file ```Results_pathopoleanalyzer.txt```.
 
 
-Use the following command to launch PathoPoleAnalyzer:
->$ python pathopoleanalyzer.py -folder vcfFilePath --TMB TMBvalue
-or
->$ python pathopoleanalyzer.py -f vcfFilePath -t TMBvalue
+### Customization
 
-You can save the result of your analysis in a text file, using the option ```-o/--output``` 
->$ pathopoleanalyzer.py -f vcfFilePath -t TMBvalue -o outputFile
+Threshold of parameters, path of folder for filtered vcf and of the result file can be customized by editing the config file ```conf.in```.
+
+
 
 ## What raises the Score?
 
 The thresholds for the different parameters are readjusted compared to Castillo's article and are as follows:
 
-	C>A substitutions > 6.6%, 
+	C>A substitutions > 6.5%, 
 	T>G substitutions > 4%, 
-	C>G substitutions < 4.6%, 
+	C>G substitutions < 5%, 
 	Indels < 4%, 
 	TMB > 100 mut/Mb.
 	Presence of Recurrent Mutations
@@ -58,20 +72,16 @@ The thresholds for the different parameters are readjusted compared to Castillo'
 ```mermaid
 
 graph TD
-A[if C>A over 6.6%] --> B(Score +1)
+A[if C>A over 6.5%] --> B(Score +1)
 F[if T>G over 4%] --> B(Score +1)
 G[if Indels below 4%] --> B(Score +1)
-H[if C>G below 4.6%] --> B(Score +1)
+H[if C>G below 5%] --> B(Score +1)
 I[if TMB over 100 mut/Mb] --> B(Score +1)
 J[if Recurrent Mutations] --> B(Score +1)
-K[if C>T over 30%] --> B(Score +1)
 B --> C(If Score >=4:) --> L(Pathogenic POLE mutation)
 B --> D(If Score =3:) --> M(Variant of Unknown Significance)
 B --> E(If Score <3:) --> N(Non-pathogenic POLE mutation)
 ```
-
-
-
 
 
 ## What is defined as a 'Recurrent Mutation'?
