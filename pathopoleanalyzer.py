@@ -207,7 +207,7 @@ if __name__ == '__main__':
         logger.info('Score Pathogenicity = +'+str(score_tso))
     
         if config.get("Results","store_results"): 
-            if os.path.exists(output):
+            if os.path.exists(output)and not args.overWrite:
                 file=open(output,"a")
             else:
                 file=open(output,"w")
@@ -257,7 +257,9 @@ if __name__ == '__main__':
                 results=pd.concat([results,temp],axis=0).reset_index(drop=True)
 
             if config.get("Results","store_results"): 
+                
                 logger.info("Writing results in output file")
+
                 if os.path.exists(output) and not args.overWrite:
                    results.to_csv(output, sep="\t", mode="a",header=False,index=False)
                 else:
