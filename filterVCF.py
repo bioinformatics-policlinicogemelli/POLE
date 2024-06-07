@@ -33,7 +33,8 @@ def write_vcf_meta(file_path, metadata):
                 if type(value) is str:
                     meta_file.write('##'+ key + ': ' + value + '\n')
                 elif type(value) is list:
-                    meta_file.write('##'+ key + ': '.join(value) + '\n')
+                    for x in value:
+                        meta_file.write('##'+ key + ': '.join(x) + '\n')
 
 
 def read_vcf_meta(file_path):
